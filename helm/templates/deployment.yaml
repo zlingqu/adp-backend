@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "helm.name" . }}
+  namespace: {{.Values.namespace}}
+  labels:
+  {{- include "helm.labels" . | nindent 4 }}
+  {{.Values.backend.labels}}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+  {{- include "helm.selectorLabels" . | nindent 6 }}
+  {{.Values.backend.labels}}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+    {{- include "helm.selectorLabels" . | nindent 8 }}
+    {{.Values.backend.labels}}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "helm.serviceAccountName" . }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Values.backend.name }}
+          securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.backend.image}}:{{ .Chart.AppVersion }}"
+          envFrom:
+            - configMapRef:
+                name: {{.Values.cm.name}}
+          ports:
+            - name: http
+              containerPort: {{.Values.cm.port}}
+              protocol: TCP
+            - name: http
+              containerPort: {{.Values.cm.eventSourcePort}}
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 5
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 5
+            failureThreshold: 10
+          resources:
+          {{- toYaml .Values.backend.resources | nindent 12 }}
+        - image: "{{ .Values.frontend.image }}:{{ .Chart.AppVersion }}"
+          name: {{.Values.frontend.name}}
+          ports:
+            - containerPort: {{.Values.frontend.port}}
+          resources:
+          {{- toYaml .Values.backend.resources | nindent 12 }}

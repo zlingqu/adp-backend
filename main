@@ -1,0 +1,30 @@
+package main
+
+import (
+	gitlab "app-deploy-platform/3rd-api/gitlab/router"
+	harbor "app-deploy-platform/3rd-api/harbor/router"
+	jenkins "app-deploy-platform/3rd-api/jenkins/router"
+	kubernetes "app-deploy-platform/3rd-api/kubernetes/router"
+	bsRouter "app-deploy-platform/backend-service/router"
+	bsServer "app-deploy-platform/backend-service/server"
+	"app-deploy-platform/common/tools"
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+	port := tools.GetEnvDefault("SERVER_PORT", "80").(string)
+	esPort := tools.GetEnvDefault("EVENT_SOURCE_PORT", "81").(string)
+	debug := tools.GetEnvDefault("DEBUG_MODEL", true).(bool)
+
+	engine := gin.New()
+	gitlab.Init(engine)
+	harbor.Init(engine)
+	jenkins.Init(engine)
+	kubernetes.Init(engine)
+	bsRouter.Init(engine)
+
+	apiServer := bsServer.RunApi(engine, port, debug)
+	bsServer.RunEventSource(esPort)
+	bsServer.WaitInterrupt(apiServer)
+
+}
