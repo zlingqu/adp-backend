@@ -30,7 +30,7 @@ spec:
       imagePullSecrets:
         - name: regsecret
       containers:
-        - image: docker.dm-ai.cn/devops/adp-service:0.1.0
+        - image: docker.dm-ai.cn/devops/adp-service:2020-09-24-11-21
           name: adp-service
           envFrom:
             - configMapRef:
