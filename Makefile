@@ -1,6 +1,6 @@
 BINARY_NAME=main
 srcDir=./src
-adpBackendImage=docker.dm-ai.cn/devops/adp-service:0.1.0
+adpBackendImage=docker.dm-ai.cn/devops/adp-service:`date "+%Y-%m-%d-%H-%M-%S"`
 
 init-env:
 	cp -f main $(srcDir)/main.go
