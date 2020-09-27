@@ -29,7 +29,7 @@ func NewPodsStatus() *PodsStatus {
 	return p
 }
 
-func (p *PodsStatus) GetKubernetesClient() {
+func (p *PodsStatus) SetKubernetesClient() {
 	config, err := clientcmd.BuildConfigFromFlags("", p.KubernetesConfigFile)
 	if err != nil {
 		log.Error("初始化k8s的客户端的配置文件出错：", err)
@@ -45,11 +45,10 @@ func (p *PodsStatus) GetKubernetesClient() {
 	p.ClientSet = clientset
 }
 
-func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha string) {
+func (p *PodsStatus) GetPodsInfo(namespace, appName, imageSha string) {
 	pods, err := p.ClientSet.CoreV1().Pods(namespace).List(metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("app=%s", appName),
 	})
-
 	if err != nil {
 		log.Error("查询pod状态失败！")
 		panic(err.Error())
@@ -204,11 +203,11 @@ func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha stri
 						p.Res.Msg = fmt.Sprintf("%s, 请确定端口设置正常，请检查应用日志, podName: %s", podCondition.Message, pod.Name)
 						p.Res.Status = "fail"
 						return
-					} else {
-						p.Res.Res = "ok"
-						p.Res.Msg = "部署成功"
-						p.Res.Status = "ok"
 					}
+					p.Res.Res = "ok"
+					p.Res.Msg = "部署成功"
+					p.Res.Status = "ok"
+
 				}
 			}
 		}
