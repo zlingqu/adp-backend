@@ -17,7 +17,7 @@ compile: clean init-env
 	&& mv build ../
 
 run:
-	./build/$(BINARY_NAME)
+	cd build && ./$(BINARY_NAME)
 
 docker-build: compile
 	docker build -t $(adpBackendImage) -f service-run.Dockerfile .
