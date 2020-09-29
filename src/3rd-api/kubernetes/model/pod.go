@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -51,40 +51,24 @@ func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha stri
 	})
 
 	if err != nil {
-		log.Error("查询pod状态失败！")
+		log.Error("List失败")
 		panic(err.Error())
 	}
 
 	if len(pods.Items) == 0 {
+		log.Error("查询pod状态失败！")
 		p.Res.Res = "fail"
-		p.Res.Msg = "未在集群中查询到此服务的pod，无法检查状态。"
+		p.Res.Msg = "查不到此pod，请检查appName、namespace是否匹配"
 		p.Res.Status = "fail"
 		return
 	}
 
-	// 检查过程中的兼容问题处理，如果检查的pod中包含有istiode容器，则在running的过程中，启动次数可能为2次。
 	var containerRestartCount int32 = 0
 
-	// if pods.Items == 0  没有在k8s集群中找到对应的应用的pod的信息。
-	for _, pod := range pods.Items {
-		log.WithFields(logrus.Fields{
-			"name":                             pod.ObjectMeta.Name,
-			"create_time":                      pod.ObjectMeta.CreationTimestamp,
-			"pod.Status.Phase":                 pod.Status.Phase,
-			"pod.Status.Conditions":            pod.Status.Conditions,
-			"pod.Status.Message":               pod.Status.Message,
-			"pod.Status.Reason":                pod.Status.Reason,
-			"pod.Status.NominatedNodeName":     pod.Status.NominatedNodeName,
-			"pod.Status.HostIP":                pod.Status.HostIP,
-			"pod.Status.PodIP":                 pod.Status.PodIP,
-			"pod.Status.StartTime":             pod.Status.StartTime,
-			"pod.Status.InitContainerStatuses": pod.Status.InitContainerStatuses,
-			"pod.Status.ContainerStatuses":     pod.Status.ContainerStatuses,
-			"pod.Status.QOSClass":              pod.Status.QOSClass,
-		})
+	for _, pod := range pods.Items { //根据标签查询的，所以可能查出多个pod，逐个判断
 
-		// 处理因为资源不够，导致的pod无法调度的情况。
-		if len(pod.Status.Conditions) == 1 {
+		// pod.Status.Conditions,正常启动后分为4个阶段，Initialized、Ready、ContainersReady、PodScheduled。
+		if len(pod.Status.Conditions) == 1 { //异常情况
 			podInfo := pod.Status.Conditions[0]
 			if pod.Status.Phase == "Pending" && podInfo.Type == "PodScheduled" && podInfo.Status == "False" && podInfo.Reason == "Unschedulable" {
 				p.Res.Res = "fail"
@@ -93,123 +77,93 @@ func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha stri
 				return
 			}
 		}
+		if len(pod.Status.Conditions) == 4 && pod.Status.Phase == "Pending" {
+			for _, container := range pod.Status.ContainerStatuses {
+				if matchIstio, _ := regexp.MatchString(".*istio/.*", container.Image); matchIstio { //跳过istio容器
+					continue
+				}
+				switch container.State.Waiting.Reason {
+				case "ContainerCreating":
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("pod中的容器正在创建，可能是正在下载镜像,%s,请稍等", container.Image)
+					return
+				case "ImagePullBackOff":
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("下载镜像异常, %s, 请检查", container.State.Waiting.Message)
+					return
+				case "PodInitializing":
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("正在进行pod的初始化，PodInitializing, 请稍等")
+					return
 
-		// 处理部署的时候，某些镜像很大的服务，正在下载镜像的情况
-		if len(pod.Status.Conditions) == 4 {
-			if pod.Status.Phase == "Pending" {
-				for _, container := range pod.Status.ContainerStatuses {
+				default:
+					p.Res.Res = "fail"
+					p.Res.Status = "fail"
+					p.Res.Msg = fmt.Sprintf("pod状态一直处于Pending状态，异常, 请手动检查原因")
+					return
 
-					if container.State.Waiting.Reason == "ContainerCreating" && container.RestartCount == 0 {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("pod中的容器正在创建，可能是正在下载镜像,%s,请稍等", container.Image)
-						return
-					}
+				}
+			}
+		}
 
-					if container.State.Waiting.Reason == "ImagePullBackOff" && container.RestartCount == 0 {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("下载镜像异常, %s, 请检查", container.State.Waiting.Message)
-						return
-					}
+		if len(pod.Status.Conditions) == 4 && pod.Status.Phase == "Running" {
+			for _, container := range pod.Status.ContainerStatuses {
+				if matchIstio, _ := regexp.MatchString(".*istio/.*", container.Image); matchIstio { //跳过istio容器
+					continue
+				}
+				if container.State.Waiting != nil {
 
-					if container.State.Waiting.Reason == "PodInitializing" && container.RestartCount == 0 {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("正在进行pod的初始化，PodInitializing, 请稍等")
-						return
-					}
+					p.Res.Res = "fail"
+					p.Res.Status = "fail"
+					p.Res.Msg = fmt.Sprintf("容器启动失败%s，%s", container.State.Waiting.Reason, container.State.Waiting.Message)
+					return
+
 				}
 
-				// 除了上面的2种情况还处于Pending的状态的话，就认为失败了。
-				p.Res.Res = "fail"
-				p.Res.Status = "fail"
-				p.Res.Msg = fmt.Sprintf("pod状态一直处于Pending状态，异常, 请手动检查检查")
-				return
+				// 针对 container.State 来就行判断，排除正在消亡的pod
+				if container.State.Terminated != nil {
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("查询到正在Terminated的容器镜像：%s,请稍等", container.Image)
+					return
+				}
+
+				if !strings.Contains(container.ImageID, imageSha) { //镜像id hash值不匹配
+					fmt.Println(container.ImageID, imageSha)
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("镜像id不匹配, %s,请稍等", container.Image)
+					return
+				}
+
+				if container.Ready == false && container.RestartCount > containerRestartCount && container.LastTerminationState.Terminated.Reason == "Error" {
+					p.Res.Res = "fail"
+					p.Res.Status = "fail"
+					p.Res.Msg = fmt.Sprintf("部署在k8s中的pod启动次数大于%d，请检查应用的日志, 确定启动失败的原因, 镜像：%s,", containerRestartCount, container.Image)
+					return
+				}
+				if container.Ready == false { //正常情况
+					p.Res.Res = "ok"
+					p.Res.Status = "continue"
+					p.Res.Msg = fmt.Sprintf("pod中的容器创建完成，正在启动及进行启动过程中的端口检查, %s,请稍等", container.Image)
+					return
+				}
 			}
 
-			if pod.Status.Phase == "Running" {
-				// 如果循环检查容器的状态中，检查到istio的容器, 则运行容器的最大重启次数为2
-				for _, container := range pod.Status.ContainerStatuses {
-					matchIstio, _ := regexp.MatchString(".*istio/.*", container.Image)
-					if matchIstio {
-						containerRestartCount = 2
-						continue
-					}
+			for _, podCondition := range pod.Status.Conditions {
+				if podCondition.Status == "False" {
+					p.Res.Res = "fail"
+					p.Res.Msg = fmt.Sprintf("%s, 请确定端口设置正常，请检查应用日志, podName: %s", podCondition.Message, pod.Name)
+					p.Res.Status = "fail"
+					return
 				}
+				p.Res.Res = "ok"
+				p.Res.Msg = "部署成功"
+				p.Res.Status = "ok"
 
-				for _, container := range pod.Status.ContainerStatuses {
-
-					// 针对 container.State 来就行判断，排除正在消亡的pod
-					if container.State.Terminated != nil {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("查询到正在Terminated的容器镜像：%s,请稍等", container.Image)
-						return
-					}
-
-					// 如果是不是匹配istio 或者 传入的镜像地址，则不检查，检查匹配istio 和传入的镜像启动的容器，排除不同的构建镜像
-					matchIstio, _ := regexp.MatchString(".*istio/.*", container.Image)
-					matchAppImage, _ := regexp.MatchString(".*"+imageSha+".*", container.ImageID)
-					if !matchAppImage && !matchIstio && imageSha != "" {
-						continue
-						//p.Res.Res = "ok"
-						//p.Res.Status = "continue"
-						//p.Res.Msg = fmt.Sprintf("检查到的容器不为部署的容器镜像, %s,请稍等", container.Image)
-						//return
-					}
-
-					// ##
-					if container.Ready == false && container.RestartCount == 0 {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("pod中的容器创建完成，正在启动及进行启动过程中的端口检查, %s,请稍等", container.Image)
-						return
-					}
-
-					// 针对含有iustio的服务，如果重启次数大于0 <= containerRestartCount,则continue
-					if container.Ready == false && container.RestartCount > 0 && container.RestartCount <= containerRestartCount && container.LastTerminationState.Terminated.Reason == "Error" {
-						p.Res.Res = "ok"
-						p.Res.Status = "continue"
-						p.Res.Msg = fmt.Sprintf("服务可能使用了istio，当前的重启测试为：%d, 镜像：%s", container.RestartCount, container.Image)
-						return
-					}
-
-					if container.Ready == false && container.RestartCount > containerRestartCount && container.LastTerminationState.Terminated.Reason == "Error" {
-						p.Res.Res = "fail"
-						p.Res.Status = "fail"
-						p.Res.Msg = fmt.Sprintf("部署在k8s中的pod启动失败次数大于%d，请检查应用的日志, 确定启动失败的原因, 镜像：%s,", containerRestartCount, container.Image)
-						return
-					}
-				}
-
-				for _, podCondition := range pod.Status.Conditions {
-					if podCondition.Status == "False" {
-						log.WithFields(logrus.Fields{
-							"name":                             pod.ObjectMeta.Name,
-							"create_time":                      pod.ObjectMeta.CreationTimestamp,
-							"pod.Status.Phase":                 pod.Status.Phase,
-							"pod.Status.Conditions":            pod.Status.Conditions,
-							"pod.Status.Message":               pod.Status.Message,
-							"pod.Status.Reason":                pod.Status.Reason,
-							"pod.Status.NominatedNodeName":     pod.Status.NominatedNodeName,
-							"pod.Status.HostIP":                pod.Status.HostIP,
-							"pod.Status.PodIP":                 pod.Status.PodIP,
-							"pod.Status.StartTime":             pod.Status.StartTime,
-							"pod.Status.InitContainerStatuses": pod.Status.InitContainerStatuses,
-							"pod.Status.ContainerStatuses":     pod.Status.ContainerStatuses,
-							"pod.Status.QOSClass":              pod.Status.QOSClass,
-						})
-						p.Res.Res = "fail"
-						p.Res.Msg = fmt.Sprintf("%s, 请确定端口设置正常，请检查应用日志, podName: %s", podCondition.Message, pod.Name)
-						p.Res.Status = "fail"
-						return
-					} else {
-						p.Res.Res = "ok"
-						p.Res.Msg = "部署成功"
-						p.Res.Status = "ok"
-					}
-				}
 			}
 		}
 	}
