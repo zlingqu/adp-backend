@@ -17,8 +17,14 @@ func (Result) TableName() string {
 
 func NewResult() *Result {
 	r := &Result{}
-	if !Model.HasTable(r.TableName()) {
-		Model.CreateTable(r)
+	// if !Model.HasTable(r.TableName()) {
+	// 	Model.CreateTable(r)
+	// }
+	if Model.HasTable(&User{}) { //判断表是否存在
+		Model.AutoMigrate(&User{}) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(&User{}) //不存在就创建新表
 	}
+
 	return r
 }
