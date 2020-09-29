@@ -38,7 +38,7 @@ func GetPodsStatus(c *gin.Context) {
 		return
 	}
 
-	pt.GetKubernetesClient()
+	pt.SetKubernetesClient()
 	pt.GetPodsInfo(namespace, appName, imageSha)
 
 	c.JSON(http.StatusOK, gin.H{
