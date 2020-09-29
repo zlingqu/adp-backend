@@ -29,7 +29,7 @@ func NewPodsStatus() *PodsStatus {
 	return p
 }
 
-func (p *PodsStatus) GetKubernetesClient() {
+func (p *PodsStatus) SetKubernetesClient() {
 	config, err := clientcmd.BuildConfigFromFlags("", p.KubernetesConfigFile)
 	if err != nil {
 		log.Error("初始化k8s的客户端的配置文件出错：", err)
@@ -45,11 +45,10 @@ func (p *PodsStatus) GetKubernetesClient() {
 	p.ClientSet = clientset
 }
 
-func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha string) {
+func (p *PodsStatus) GetPodsInfo(namespace, appName, imageSha string) {
 	pods, err := p.ClientSet.CoreV1().Pods(namespace).List(metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("app=%s", appName),
 	})
-
 	if err != nil {
 		log.Error("List失败")
 		panic(err.Error())
@@ -129,6 +128,7 @@ func (p *PodsStatus) GetPodsInfo(namespace string, appName string, imageSha stri
 					p.Res.Status = "continue"
 					p.Res.Msg = fmt.Sprintf("查询到正在Terminated的容器镜像：%s,请稍等", container.Image)
 					return
+
 				}
 
 				if !strings.Contains(container.ImageID, imageSha) { //镜像id hash值不匹配
