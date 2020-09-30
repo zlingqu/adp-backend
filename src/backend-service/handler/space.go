@@ -12,7 +12,6 @@ import (
 
 //GetSpace 获取space列表，/api/v1/space?name=xmc&page=2&size=10，其中name可以为空。page和size两个参数没有使用到
 func GetSpace(c *gin.Context) {
-
 	var space []m.Space
 	var param m.GetSpace
 	var count int64
