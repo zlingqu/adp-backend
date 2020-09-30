@@ -12,15 +12,15 @@ import (
 func GetSpace(c *gin.Context) {
 
 	var space []m.Space
-	// var getSpace m.GetSpace
+	var param m.GetSpace
 	var count int64
-	// if err := c.ShouldBind(&getSpace); err != nil {
-	// 	log.Error(err)
-	// 	// return
-	// }
+	if err := c.ShouldBind(&param); err != nil { //page和size两个参数没有使用到
+		log.Error(err)
+		// return
+	}
 
-	// m.Model.Where("name LIKE ?", "%"+getSpace.Name+"%").Find(&space).Count(&count)
-	m.Model.Find(&space).Count(&count)
+	m.Model.Where("name LIKE ?", "%"+param.Name+"%").Find(&space).Count(&count)
+	// m.Model.Find(&space).Count(&count)
 	// log.Println(space)
 	log.Info("GetSpace查出条数", count)
 
