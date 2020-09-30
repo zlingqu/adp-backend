@@ -68,7 +68,7 @@ func projectRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 func spaceRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 	v1.GET("/space", GetSpace)
 	v1.POST("/space", PostSpace)
-	// v1.PUT("/space/:id", PutSpace)
+	v1.PUT("/space/:id", PutSpace)
 	v1.DELETE("/space/:id", DeleteSpace)
 }
 

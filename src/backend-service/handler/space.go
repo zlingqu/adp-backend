@@ -3,25 +3,24 @@ package handler
 import (
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
+//GetSpace 获取space列表，/api/v1/space?name=xmc&page=2&size=10，其中name可以为空。page和size两个参数没有使用到
 func GetSpace(c *gin.Context) {
 
 	var space []m.Space
 	var param m.GetSpace
 	var count int64
-	if err := c.ShouldBind(&param); err != nil { //page和size两个参数没有使用到
+	if err := c.ShouldBind(&param); err != nil {
 		log.Error(err)
-		// return
 	}
 
 	m.Model.Where("name LIKE ?", "%"+param.Name+"%").Find(&space).Count(&count)
-	// m.Model.Find(&space).Count(&count)
-	// log.Println(space)
 	log.Info("GetSpace查出条数", count)
 
 	c.JSON(http.StatusOK, gin.H{
@@ -32,11 +31,11 @@ func GetSpace(c *gin.Context) {
 	})
 }
 
+// PostSpace 创建space，POST /api/v1/space body是json格式
 func PostSpace(c *gin.Context) {
 	space := m.NewSpace()
 	if err := c.ShouldBindJSON(&space); err != nil {
 		log.Error(err)
-		// return
 	}
 	log.Info(space)
 	rows := m.Model.Create(space).RowsAffected
@@ -53,6 +52,7 @@ func PostSpace(c *gin.Context) {
 	})
 }
 
+// PutSpace 用于更新space,/api/v1/space/48.请求体是json,{name: "devops", owner: "quzhongling"}
 func PutSpace(c *gin.Context) {
 	space := m.NewSpace()
 
@@ -65,25 +65,27 @@ func PutSpace(c *gin.Context) {
 
 	log.Println(*space)
 
-	//m.Model.Save(env)
-	m.Model.Model(space).Updates(*space)
-
+	raws := m.Model.Model(space).Updates(*space).RowsAffected
+	if raws == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  fmt.Sprintf("更新失败，表%s中没有这样的记录id=%s", space.TableName(), id),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",
 	})
 }
 
+// DeleteSpace 删除space，根据id 。/api/v1/space/116
 func DeleteSpace(c *gin.Context) {
 	space := m.NewSpace()
 	id := c.Param("id")
 
 	space.ID = tools.StringToUint(id)
-	//check id , default 0
 	log.Println("del id : ", id)
-	//if err := c.ShouldBind(space); err != nil {
-	//	log.Error(err)
-	//}
 
 	m.Model.Delete(space)
 
