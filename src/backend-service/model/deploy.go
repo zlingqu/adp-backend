@@ -3,10 +3,11 @@ package model
 import (
 	"app-deploy-platform/common/tools"
 	"fmt"
-	log "github.com/zuoshenglo/libs/logs/logrus"
 	"strconv"
 	"strings"
 	"time"
+
+	log "github.com/zuoshenglo/libs/logs/logrus"
 )
 
 type UpdateDeploy struct {
@@ -70,8 +71,13 @@ func (Deploy) TableName() string {
 
 func NewDeploy() *Deploy {
 	d := &Deploy{}
-	if !Model.HasTable(d.TableName()) {
-		Model.CreateTable(d)
+	// if !Model.HasTable(d.TableName()) {
+	// 	Model.CreateTable(d)
+	// }
+	if Model.HasTable(d.TableName()) { //判断表是否存在
+		Model.AutoMigrate(d) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(d) //不存在就创建新表
 	}
 	return d
 }

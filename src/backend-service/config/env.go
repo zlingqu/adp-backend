@@ -3,9 +3,10 @@ package config
 import (
 	"app-deploy-platform/backend-service/database"
 	"app-deploy-platform/common/tools"
-	"github.com/go-sql-driver/mysql"
 	"strings"
 	"time"
+
+	"github.com/go-sql-driver/mysql"
 )
 
 type Env struct {
@@ -68,10 +69,13 @@ var (
 
 		Database: database.Config{
 			Config: mysql.Config{
+				// User:                 "quzl",
+				// Passwd:               "quzl",
+				// DBName:               "quzl",
 				User:                 "adp_test",
 				Passwd:               "adp_test",
-				Addr:                 "192.168.3.151:3306",
 				DBName:               "test_adp",
+				Addr:                 "192.168.3.151:3306",
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",
 				AllowNativePasswords: true,

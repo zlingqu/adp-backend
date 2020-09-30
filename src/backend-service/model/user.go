@@ -3,9 +3,10 @@ package model
 import (
 	"app-deploy-platform/backend-service/config"
 	"encoding/json"
+	"time"
+
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/resty.v1"
-	"time"
 )
 
 type UserInfo struct {
@@ -28,8 +29,13 @@ func (User) TableName() string {
 
 func NewUser() *User {
 	u := &User{}
-	if !Model.HasTable(u.TableName()) {
-		Model.CreateTable(u)
+	// if !Model.HasTable(u.TableName()) {
+	// 	Model.CreateTable(u)
+	// }
+	if Model.HasTable(u.TableName()) { //判断表是否存在
+		Model.AutoMigrate(u) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(u) //不存在就创建新表
 	}
 	return u
 }

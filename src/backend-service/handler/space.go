@@ -3,24 +3,26 @@ package handler
 import (
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func GetSpace(c *gin.Context) {
 
 	var space []m.Space
-	var getSpace m.GetSpace
+	// var getSpace m.GetSpace
 	var count int64
-	if err := c.ShouldBind(&getSpace); err != nil {
-		log.Error(err)
-		// return
-	}
+	// if err := c.ShouldBind(&getSpace); err != nil {
+	// 	log.Error(err)
+	// 	// return
+	// }
 
-	m.Model.Where("name LIKE ?", "%"+getSpace.Name+"%").Find(&space).Count(&count)
-	log.Println(space)
-	log.Println(count)
+	// m.Model.Where("name LIKE ?", "%"+getSpace.Name+"%").Find(&space).Count(&count)
+	m.Model.Find(&space).Count(&count)
+	// log.Println(space)
+	log.Info("GetSpace查出条数", count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
@@ -32,13 +34,19 @@ func GetSpace(c *gin.Context) {
 
 func PostSpace(c *gin.Context) {
 	space := m.NewSpace()
-
 	if err := c.ShouldBindJSON(&space); err != nil {
 		log.Error(err)
 		// return
 	}
-	log.Println(space)
-	m.Model.Create(space)
+	log.Info(space)
+	rows := m.Model.Create(space).RowsAffected
+	if rows == 0 {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 1,
+			"msg":  "插入数据库失败！",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",
