@@ -1,18 +1,21 @@
 package server
 
 import (
+	"app-deploy-platform/backend-service/config"
+	"app-deploy-platform/backend-service/handler"
 	"context"
 	"net/http"
 
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+
 	"gopkg.in/antage/eventsource.v1"
 
-	// "gopkg.in/antage/eventsource.v1"
+	"gopkg.in/antage/eventsource.v1"
 	"log"
-	// "net/http"
+	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -57,30 +60,30 @@ func RunEventSource(port string) {
 
 	http.Handle("/events", es)
 
-	// deployEnv := config.GetEnv().DeployEnv
+	deployEnv := config.GetEnv().DeployEnv
 
-	// go func() {
-	// 	var appId uint
-	// 	log.Println(appId)
-	// 	for {
-	// 		// result, err := handler.SearchAdpResultInfo(deployEnv, "x4c-mgepap-tp-service")
-	// 		result, err := handler.SearchAdpResultInfo(deployEnv, "cpm")
-	// 		if err != nil {
-	// 			log.Println("错误：", err)
-	// 			time.Sleep(2 * time.Second)
-	// 			continue
-	// 		}
-	// 		if result.ID > appId {
-	// 			r, _ := json.Marshal(result)
-	// 			es.SendEventMessage(string(r), "", "")
-	// 		}
-	// 		appId = result.ID
+	go func() {
+		var appId uint
+		log.Println(appId)
+		for {
+			// result, err := handler.SearchAdpResultInfo(deployEnv, "x4c-mgepap-tp-service")
+			result, err := handler.SearchAdpResultInfo(deployEnv, "cpm")
+			if err != nil {
+				log.Println("错误：", err)
+				time.Sleep(2 * time.Second)
+				continue
+			}
+			if result.ID > appId {
+				r, _ := json.Marshal(result)
+				es.SendEventMessage(string(r), "", "")
+			}
+			appId = result.ID
 
-	// 		log.Printf("Hello has been sent (consumers: %d)", es.ConsumersCount())
-	// 		log.Printf("当前appId为：%d\n", appId)
-	// 		time.Sleep(2 * time.Second)
-	// 	}
-	// }()
+			log.Printf("Hello has been sent (consumers: %d)", es.ConsumersCount())
+			log.Printf("当前appId为：%d\n", appId)
+			time.Sleep(2 * time.Second)
+		}
+	}()
 
 	go func() {
 		if err := http.ListenAndServe(":"+port, nil); err != nil {
