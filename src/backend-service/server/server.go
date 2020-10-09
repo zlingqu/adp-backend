@@ -13,9 +13,7 @@ import (
 
 	"gopkg.in/antage/eventsource.v1"
 
-	"gopkg.in/antage/eventsource.v1"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
