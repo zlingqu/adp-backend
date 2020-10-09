@@ -2,8 +2,9 @@ package handler
 
 import (
 	m "app-deploy-platform/backend-service/model"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetUserForName(c *gin.Context) {
@@ -27,27 +28,27 @@ func GetUserForName(c *gin.Context) {
 	})
 }
 
-func GetUserChinaName(c *gin.Context) {
-	ownerEnglishName := c.DefaultQuery("ownerEnglishName", "")
-	db := m.Model
-	var repData struct {
-		OwnerChinaName string `json:"owner_china_name"`
-	}
+// func GetUserChinaName(c *gin.Context) {
+// 	ownerEnglishName := c.DefaultQuery("ownerEnglishName", "")
+// 	db := m.Model
+// 	var repData struct {
+// 		OwnerChinaName string `json:"owner_china_name"`
+// 	}
 
-	// select db
-	db = db.Table("user")
-	db = db.Select("owner_china_name")
-	db = db.Where("owner_english_name = ?", ownerEnglishName)
-	db.Find(&repData)
+// 	// select db
+// 	db = db.Table("user")
+// 	db = db.Select("owner_china_name")
+// 	db = db.Where("owner_english_name = ?", ownerEnglishName)
+// 	db.Find(&repData)
 
-	// reponse
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"msg":  "ok",
-		"res":  "ok",
-		"data": repData,
-	})
-}
+// 	// reponse
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"code": 0,
+// 		"msg":  "ok",
+// 		"res":  "ok",
+// 		"data": repData,
+// 	})
+// }
 
 func SyncLdapUser(c *gin.Context) {
 

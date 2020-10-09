@@ -3,9 +3,11 @@ package handler
 import (
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func GetEnv(c *gin.Context) {
@@ -40,8 +42,16 @@ func GetEnvByID(c *gin.Context) {
 	}
 
 	log.Println(getEnvByID.ID)
-	m.Model.First(&env, getEnvByID.ID).Count(&count)
-
+	RowsAffected := m.Model.First(&env, getEnvByID.ID).Count(&count).RowsAffected
+	if RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":  404,
+			"count": 0,
+			"msg":   fmt.Sprintf("找不到id=%s的env", getEnvByID.ID),
+			"data":  nil,
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"count": 1,
