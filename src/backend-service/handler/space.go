@@ -86,8 +86,15 @@ func DeleteSpace(c *gin.Context) {
 	space.ID = tools.StringToUint(id)
 	log.Println("del id : ", id)
 
-	m.Model.Delete(space)
-
+	RowsAffected := m.Model.Delete(space).RowsAffected
+	if RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code": 404,
+			"msg":  fmt.Sprintf("请求错误，没有id=%s这样的space", id),
+			"res":  "error",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",
