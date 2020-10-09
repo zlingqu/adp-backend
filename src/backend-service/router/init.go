@@ -51,8 +51,8 @@ func envRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 }
 
 func projectRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
-	v1.GET("/project", GetProject)
-	v1.GET("/project/:id", GetProjectById)
+	v1.GET("/project", GetProject)         //http://{{host}}/api/v1/project/?name=backend，如果没有name选项表示查看所有
+	v1.GET("/project/:id", GetProjectById) //http://{{host}}/api/v1/project/80
 	v1.POST("/project", PostProject)
 	v1.POST("/projects", PostProjects)
 	v1.PUT("/project", PutProject)
