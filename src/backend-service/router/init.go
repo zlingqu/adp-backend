@@ -75,5 +75,5 @@ func spaceRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 func userRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 	v1.GET("/sync-ldap-user", SyncLdapUser)
 	v1.GET("/get-user-for-name", GetUserForName)
-	// v1.GET("/user/get-owner-china-name", GetUserChinaName)
+	v1.GET("/user/get-owner-china-name", GetUserChinaName)
 }
