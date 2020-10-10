@@ -137,6 +137,8 @@ func GetProjectV2(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"count": count,
+		"page":  c.DefaultQuery("page", "1"),
+		"size":  c.DefaultQuery("size", "1"),
 		"msg":   "ok",
 		"res":   "ok",
 		"data":  project,
