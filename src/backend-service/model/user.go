@@ -2,10 +2,14 @@ package model
 
 import (
 	"app-deploy-platform/backend-service/config"
+	"bytes"
 	"encoding/json"
-	log "github.com/sirupsen/logrus"
-	"gopkg.in/resty.v1"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type UserInfo struct {
@@ -28,8 +32,13 @@ func (User) TableName() string {
 
 func NewUser() *User {
 	u := &User{}
-	if !Model.HasTable(u.TableName()) {
-		Model.CreateTable(u)
+	// if !Model.HasTable(u.TableName()) {
+	// 	Model.CreateTable(u)
+	// }
+	if Model.HasTable(u.TableName()) { //判断表是否存在
+		Model.AutoMigrate(u) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(u) //不存在就创建新表
 	}
 	return u
 }
@@ -61,6 +70,21 @@ type MisLdapService struct {
 	Msg string
 }
 
+/*
+mis的ladp接口需要的接口格式
+{
+    "type":"people",
+    "condition":{
+        "l":"中国-广州",
+        "isShow":"1"
+    },
+    "attributes":[
+        "cn",
+        "displayName"
+    ]
+}
+*/
+
 func NewMisLdapService() *MisLdapService {
 	return &MisLdapService{
 		Req: MisLdapServiceReq{
@@ -81,33 +105,40 @@ func NewMisLdapService() *MisLdapService {
 }
 
 func (m *MisLdapService) Request() *MisLdapService {
-	client := resty.New()
-	misLdapServiceUrl := config.GetEnv().MisLdapServiceUrl
-	r, e := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(m.Req).Post(misLdapServiceUrl)
 
-	// 处理请求问题和错误
-	if e != nil {
-		log.Error(e)
+	misLdapServiceURL := config.GetEnv().MisLdapServiceUrl
+
+	jsonStr, err := json.Marshal(m.Req)
+	if err != nil {
+		fmt.Println("json转换错误")
+	}
+	req, _ := http.NewRequest("POST", misLdapServiceURL, bytes.NewBuffer(jsonStr))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	if err != nil {
+		log.Error("请求mis-ldap-service,错误信息是", err)
 		m.Res = "fail"
 		m.Msg = "请求mis-ldap-service异常。"
 		return m
 	}
-
-	if r.StatusCode() != 200 {
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	err = json.Unmarshal(body, &m.Rep)
+	statuscode := resp.StatusCode
+	if statuscode != 200 {
 		m.Res = "fail"
 		m.Msg = "请求mis-ldap-service结果状态码，不等于200。"
 		return m
 	}
 
-	e = json.Unmarshal(r.Body(), &m.Rep)
-
-	if e != nil {
-		log.Error(e)
+	if err != nil {
 		m.Res = "fail"
 		m.Msg = "对mis-ldap-service的请求结果进行json反序列化失败。"
 		return m
 	}
+
 	return m
 }

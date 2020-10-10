@@ -4,12 +4,16 @@ import (
 	"app-deploy-platform/backend-service/config"
 	"app-deploy-platform/backend-service/handler"
 	"context"
+	"net/http"
+
 	"encoding/json"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
+
 	"gopkg.in/antage/eventsource.v1"
+
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
@@ -60,6 +64,7 @@ func RunEventSource(port string) {
 		var appId uint
 		log.Println(appId)
 		for {
+			// result, err := handler.SearchAdpResultInfo(deployEnv, "x4c-mgepap-tp-service")
 			result, err := handler.SearchAdpResultInfo(deployEnv, "cpm")
 			if err != nil {
 				log.Println("错误：", err)

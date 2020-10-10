@@ -7,14 +7,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/zuoshenglo/libs/logs/logrus"
-	tool "github.com/zuoshenglo/tools"
-	"gopkg.in/resty.v1"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/zuoshenglo/libs/logs/logrus"
+	tool "github.com/zuoshenglo/tools"
+	"gopkg.in/resty.v1"
 )
 
 func DeployOnline(c *gin.Context) {
@@ -263,7 +264,7 @@ func PostUpdate(c *gin.Context) {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
-			"res":  "fail",
+			"res":  "json转换失败",
 		})
 		return
 	}
@@ -275,7 +276,7 @@ func PostUpdate(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  e,
-			"res":  "fail",
+			"res":  e.Error(),
 		})
 		return
 	} else {
