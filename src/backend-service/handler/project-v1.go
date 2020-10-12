@@ -5,7 +5,10 @@ import (
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	"io/ioutil"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -79,7 +82,8 @@ func PostProject(c *gin.Context) {
 
 	log.Println("The received front-end request data is : ", project,
 		" , Start to request service-call-jenkins to create the project : ", project.Name)
-
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	fmt.Println("---body/--- \r\n " + string(body))
 	//msg = JenkinsProject(project, "create")
 	//if msg != "ok" {
 	//	c.JSON(http.StatusOK, gin.H{
