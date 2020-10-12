@@ -62,7 +62,7 @@ var (
 	localAddr = "http://localhost:" + tools.GetEnvDefault("SERVER_PORT", "80").(string)
 	env       = Env{
 		AppName: tools.GetEnvDefault("APP_NAME", "service-adp-deploy").(string),
-		Debug:   tools.GetEnvDefault("DEBUG_MODEL", true).(bool),
+		Debug:   tools.GetEnvDefault("DEBUG_MODEL", false).(bool),
 
 		ServerPort:      tools.GetEnvDefault("SERVER_PORT", "80").(string),
 		EventSourcePort: tools.GetEnvDefault("EVENT_SOURCE_PORT", "81").(string),
