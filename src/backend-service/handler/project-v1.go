@@ -71,6 +71,16 @@ func PostProject(c *gin.Context) {
 	var msg string
 	var res string
 
+	//打印body
+	var bodyBytes []byte
+	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		return
+	}
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+	fmt.Printf("请求的body原始格式是：%s", string(bodyBytes))
+	//打印body
+
 	if err := c.ShouldBindJSON(&project); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
@@ -82,14 +92,6 @@ func PostProject(c *gin.Context) {
 
 	log.Println("The received front-end request data is : ", project,
 		" , Start to request service-call-jenkins to create the project : ", project.Name)
-
-	var bodyBytes []byte
-	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		return
-	}
-	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
-	fmt.Printf("曲%s",string(bodyBytes))
 
 	//msg = JenkinsProject(project, "create")
 	//if msg != "ok" {
