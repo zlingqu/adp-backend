@@ -89,7 +89,7 @@ func PostProject(c *gin.Context) {
 		return
 	}
 	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
-	fmt.Println(string(bodyBytes))
+	fmt.Printf("曲%s",string(bodyBytes))
 
 	//msg = JenkinsProject(project, "create")
 	//if msg != "ok" {
