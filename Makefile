@@ -33,6 +33,3 @@ docker-buildAndPush: docker-build
 
 docker-buildUseDocker:
 	docker build -t $(adpBackendImage) -f service-compile.Dockerfile .
-
-
-

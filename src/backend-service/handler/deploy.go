@@ -654,10 +654,10 @@ func getUserInfo(name string) (map[string]string, error) {
 }
 
 func getOwnerChinaName(ownerEnglishName string) (string, error) {
-	repUrl := config.GetEnv().SearchOwnerChinaForEnglishNameUrl
+	repURL := config.GetEnv().SearchOwnerChinaForEnglishNameUrl
 
 	client := resty.New()
-	r, e := client.R().SetQueryParam("ownerEnglishName", ownerEnglishName).Get(repUrl)
+	r, e := client.R().SetQueryParam("ownerEnglishName", ownerEnglishName).Get(repURL)
 
 	if e != nil {
 		log.Error(e)
