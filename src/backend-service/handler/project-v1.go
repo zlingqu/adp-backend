@@ -15,6 +15,67 @@ import (
 	"gopkg.in/resty.v1"
 )
 
+type Project struct {
+	AppName    string `json:"app_name"`
+	GitAddress string `json:"git_address"`
+}
+
+func NewProject() *Project {
+	return &Project{}
+}
+
+func (p *Project) CreateJob() (res string, msg string) {
+
+	client := resty.New()
+	//调用jenkins接口，创建项目
+	r, e := client.R().SetHeader("Content-Type", "application/json").SetBody(map[string]string{"app_name": p.AppName, "git_address": p.GitAddress}).Post(config.GetEnv().ServiceCallJenkins)
+
+	if e != nil {
+		return "fail", "request service-call-jenkins create job fail"
+	}
+
+	if r.StatusCode() != 200 {
+		return "fail", "request service-call-jenkins create job fail, rep code is not 200"
+	}
+
+	rep := NewCommonRep()
+	if e = json.Unmarshal(r.Body(), rep); e != nil {
+		return "fail", "json marshal fail"
+	}
+
+	return rep.Res, rep.Msg
+}
+
+func (p *Project) DeleteJob() (res string, msg string) {
+	client := resty.New()
+	r, e := client.R().SetQueryString("app_name=" + p.AppName).Delete(config.GetEnv().ServiceCallJenkins)
+
+	if e != nil {
+		return "fail", "request service-call-jenkins delete job fail"
+	}
+
+	if r.StatusCode() != 200 {
+		return "fail", "request service-call-jenkins delete job fail, rep code is not 200"
+	}
+
+	rep := NewCommonRep()
+	if e = json.Unmarshal(r.Body(), rep); e != nil {
+		return "fail", "json marshal fail"
+	}
+
+	return rep.Res, rep.Msg
+}
+
+type CommonRep struct {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+	Res  string `json:"res"`
+}
+
+func NewCommonRep() *CommonRep {
+	return &CommonRep{}
+}
+
 func GetProject(c *gin.Context) {
 
 	var project []m.Project
@@ -90,17 +151,8 @@ func PostProject(c *gin.Context) {
 		return
 	}
 
-	log.Println("The received front-end request data is : ", project,
-		" , Start to request service-call-jenkins to create the project : ", project.Name)
+	// log.Println("The received front-end request data is : ", project, " , Start to request service-call-jenkins to create the project : ", project.Name)
 
-	//msg = JenkinsProject(project, "create")
-	//if msg != "ok" {
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"code": 0,
-	//		"msg":  "fail",
-	//	})
-	//	return
-	//}
 	pj := NewProject()
 	pj.AppName = project.Name
 	pj.GitAddress = project.GitRepository
@@ -270,69 +322,4 @@ func DeleteProject(c *gin.Context) {
 	//	"msg":  "ok",
 	//})
 
-}
-
-type Project struct {
-	AppName    string `json:"app_name"`
-	GitAddress string `json:"git_address"`
-}
-
-func NewProject() *Project {
-	return &Project{}
-}
-
-func (p *Project) CreateJob() (res string, msg string) {
-
-	client := resty.New()
-	r, e := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(map[string]string{"app_name": p.AppName, "git_address": p.GitAddress}).
-		Post(config.GetEnv().ServiceCallJenkins)
-
-	if e != nil {
-		return "fail", "request service-call-jenkins create job fail"
-	}
-
-	if r.StatusCode() != 200 {
-		return "fail", "request service-call-jenkins create job fail, rep code is not 200"
-	}
-
-	rep := NewCommonRep()
-	if e = json.Unmarshal(r.Body(), rep); e != nil {
-		return "fail", "json marshal fail"
-	}
-
-	return rep.Res, rep.Msg
-}
-
-func (p *Project) DeleteJob() (res string, msg string) {
-	client := resty.New()
-	r, e := client.R().
-		SetQueryString("app_name=" + p.AppName).
-		Delete(config.GetEnv().ServiceCallJenkins)
-
-	if e != nil {
-		return "fail", "request service-call-jenkins delete job fail"
-	}
-
-	if r.StatusCode() != 200 {
-		return "fail", "request service-call-jenkins delete job fail, rep code is not 200"
-	}
-
-	rep := NewCommonRep()
-	if e = json.Unmarshal(r.Body(), rep); e != nil {
-		return "fail", "json marshal fail"
-	}
-
-	return rep.Res, rep.Msg
-}
-
-type CommonRep struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Res  string `json:"res"`
-}
-
-func NewCommonRep() *CommonRep {
-	return &CommonRep{}
 }
