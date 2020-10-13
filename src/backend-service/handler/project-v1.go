@@ -4,10 +4,11 @@ import (
 	"app-deploy-platform/backend-service/config"
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
-        "io/ioutil"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -82,9 +83,7 @@ func PostProject(c *gin.Context) {
 	log.Println("The received front-end request data is : ", project,
 		" , Start to request service-call-jenkins to create the project : ", project.Name)
 
-
-
-	var bodyBytes []byte 
+	var bodyBytes []byte
 	bodyBytes, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		return
