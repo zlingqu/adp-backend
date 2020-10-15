@@ -18,6 +18,8 @@ import (
 	"gopkg.in/resty.v1"
 )
 
+
+
 func DeployOnline(c *gin.Context) {
 	var ID m.ID
 	if err := c.ShouldBindUri(&ID); err != nil {
@@ -101,6 +103,57 @@ func DeployOnline(c *gin.Context) {
 	})
 }
 
+func DeployByID(id uint) string {
+
+	// select table deploy
+	d := m.NewDeploy()
+	m.Model.First(d, id)
+	log.Info("User attempts to deploy : ", d)
+
+	// get env by id
+	env, e := getEnvById(d.EnvId)
+	if e != nil {
+		return "error"
+	}
+
+	// get project by id
+	project, e := getProjectById(d.AppId)
+	if e != nil {
+		return "error"
+	}
+
+	res, msg, url, lb := "", "", "", ""
+
+	log.Info("First request service-operate-jenkins build")
+	res, msg, url, lb = ReqServiceOperateJenkinsBuild(env, project, d)
+
+	if res == "fail" {
+		// req service-call-jenkins
+		log.Info("Failed to request service-operate-jenkins for the first time. Try to request service-call-jenkins trigger.")
+		res, msg = ReqServiceCallJenkinsTrigger(project)
+		if res == "ok" {
+			time.Sleep(2 * time.Second)
+			log.Info("The attempt to request service-call-jenkins trigger succeeded, and the second start to request service-operate-jenkins build")
+			res, msg, url, lb = ReqServiceOperateJenkinsBuild(env, project, d)
+			if res == "fail" {
+				msg = "Please confirm whether there is Jenkinsfile under the build branch!"
+			}
+		}
+	}
+
+	if res == "ok" {
+		d.LastBuildInfo = lb
+		d.Status = "building"
+		d.JenkinsBuildToken = url
+		t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
+		d.LastDeploy = t2
+		m.Model.Save(d)
+		return "ok"
+	}
+	fmt.Println(msg)
+	return "error"
+}
+
 func ReqServiceCallJenkinsJobUpdate(appName string, gitAddress string) (res string, msg string) {
 	client := resty.New()
 	r, e := client.R().SetHeader("Accept", "application/json").
@@ -150,8 +203,7 @@ func ReqServiceOperateJenkinsBuild(env m.GetEnvById, project m.GetProjectById, d
 	reqJenkinsBuild.SetReqJenkinsBuildData(env.Data, project.Data, *d).SetReplics(env.Data.Name, project.Data.PodsNum).SetUnityAppName(project.Data.UnityAppId)
 	byte, _ := json.Marshal(reqJenkinsBuild)
 	client := resty.New()
-	r, e := client.R().SetHeader("Accept", "application/json").
-		SetBody(string(byte)).Post(config.GetEnv().JenkinsBuildAddress)
+	r, e := client.R().SetHeader("Accept", "application/json").SetBody(string(byte)).Post(config.GetEnv().JenkinsBuildAddress)
 	if e != nil {
 		log.Error(e)
 		return "fail", "fail", url, lb
