@@ -145,6 +145,7 @@ func PostProject(c *gin.Context) {
 	if err := c.ShouldBindJSON(&project); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
+
 			"code": 0,
 			"msg":  "fail",
 		})
@@ -292,34 +293,5 @@ func DeleteProject(c *gin.Context) {
 		"msg":  "ok",
 		"res":  "ok",
 	})
-
-	//project := m.NewProject()
-	//if err := c.ShouldBind(project); err != nil {
-	//	log.Error(err)
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"code": 0,
-	//		"msg":  "fail",
-	//	})
-	//	return
-	//}
-	//
-	//log.Println("Start calling service operate Jenkins to delete the project: ", project.Name)
-	//
-	////msg = JenkinsProject(project, "delete")
-	////if msg != "ok" {
-	////	c.JSON(http.StatusOK, gin.H{
-	////		"code": 0,
-	////		"msg":  "fail",
-	////	})
-	////	return
-	////}
-	//
-	//log.Println("Call service operate Jenkins to delete the project: ", project.Name, " ok", "Start to delete data in mysql-table project")
-	//m.Model.Delete(project)
-	//
-	//c.JSON(http.StatusOK, gin.H{
-	//	"code": 0,
-	//	"msg":  "ok",
-	//})
 
 }

@@ -33,6 +33,7 @@ func deployRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 	v1.GET("/healthCheck", HealCheck)
 	v1.GET("/metrics", HealCheck)
 	v1.GET("/deploy/online/:id", DeployOnline)
+	v1.POST("/deploy/onlines", Mdeploy)
 	v1.POST("/deployments/list", PostDeployList)
 	v1.POST("/deployments/create", PostDeploy)
 	v1.POST("/deployments/update", PostUpdate)
