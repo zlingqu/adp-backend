@@ -16,10 +16,9 @@ job_build:
   script:
     - cp main src/main.go
     - cd src
-    - cp -r 3rd-api/kubernetes/key .
-    - cp -r 3rd-api/jenkins/conf .
     - go build -o build/${SERVER_NAME} -v ./
-    - cp -r conf key ./build
+    - cp -r 3rd-api/kubernetes/key build/
+    - cp -r 3rd-api/jenkins/conf build/
   artifacts:
     expire_in: 3 mos #制品包在gitlab上的保存时间（每小时定时删除过期制品），如果不设置，将永久保存。
     paths:
