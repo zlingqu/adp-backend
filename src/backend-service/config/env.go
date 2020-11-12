@@ -69,12 +69,13 @@ var (
 
 		Database: database.Config{
 			Config: mysql.Config{
-				// User:                 "quzl",
-				// Passwd:               "quzl",
-				// DBName:               "quzl",
-				User:                 "adp_test",
-				Passwd:               "adp_test",
-				DBName:               "test_adp",
+
+				// User:                 "adp_test",
+				// Passwd:               "adp_test",
+				// DBName:               "test_adp",
+				User:                 "quzl",
+				Passwd:               "quzl",
+				DBName:               "dev_adp",
 				Addr:                 "192.168.3.151:3306",
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",
