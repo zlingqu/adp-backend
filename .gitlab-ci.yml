@@ -14,7 +14,7 @@ job_build:
   image: golang:1.15-alpine
   stage: build
   script:
-    - pwd && ls -l
+    - cp main src/main.go
     - cd src
     - cp -r 3rd-api/kubernetes/key .
     - cp -r 3rd-api/jenkins/conf .
