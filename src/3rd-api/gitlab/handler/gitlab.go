@@ -2,38 +2,57 @@ package handler
 
 import (
 	"app-deploy-platform/3rd-api/gitlab/config"
+	svc "app-deploy-platform/3rd-api/gitlab/service"
 	"app-deploy-platform/common/tools"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-	"gopkg.in/resty.v1"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"gopkg.in/resty.v1"
 )
 
-func ProjectBranchs(c *gin.Context) {
+// func ProjectBranchs(c *gin.Context) {
 
-	gitHttpAddress := c.DefaultQuery("http_url_to_repo", "error")
+// 	gitHttpAddress := c.DefaultQuery("http_url_to_repo", "error")
 
-	if gitHttpAddress == "error" {
-		c.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"res":  "error",
-			"msg":  "http_url_to_repo参数错误。",
-		})
-		return
-	}
+// 	if gitHttpAddress == "error" {
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"code": 0,
+// 			"res":  "error",
+// 			"msg":  "http_url_to_repo参数错误。",
+// 		})
+// 		return
+// 	}
 
-	// 查询项目id
-	gitLab := NewGitLab().GetProjectName(gitHttpAddress).GetProjectId().GetProjectBranchs()
+// 	// 查询项目id
+// 	gitLab := NewGitLab().GetProjectName(gitHttpAddress).GetProjectId().GetProjectBranchs()
+
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"code": 0,
+// 		"res":  gitLab.Res,
+// 		"msg":  gitLab.Msg,
+// 		"data": gitLab.ProjectBranches,
+// 	})
+// }
+
+func GetCommitID(c *gin.Context) {
+
+	gitHttpUrl := c.DefaultQuery("http_url_to_repo", "error")
+	branchName := c.DefaultQuery("branch", "error")
+	commitID := svc.GetCommitIDByRepourlAndBranch(gitHttpUrl, branchName)
+	fmt.Println(gitHttpUrl, branchName)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
-		"res":  gitLab.Res,
-		"msg":  gitLab.Msg,
-		"data": gitLab.ProjectBranches,
+		"res":  "OK",
+		"msg":  "获取成功",
+		"data": commitID,
+		// "data": 2000,
 	})
 }
 
@@ -67,6 +86,23 @@ func (g *GitLab) GetProjectName(HttpUrlToRepo string) *GitLab {
 	log.Println("项目名称：" + g.ProjectName + ", 项目git地址：" + g.ProjectGitAddress)
 	g.SetKey(HttpUrlToRepo)
 	return g
+}
+
+func ProjectBranchs(c *gin.Context) {
+
+	// gitHttpUrl := c.DefaultQuery("http_url_to_repo", "error")
+	// branchName := c.DefaultQuery("branch", "error")
+	gitHttpAddress := c.DefaultQuery("http_url_to_repo", "error")
+	branchSlince := svc.GetBranchByRepourl(gitHttpAddress)
+	// fmt.Println(gitHttpUrl, branchName)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"res":  "OK",
+		"msg":  "获取成功",
+		"data": branchSlince,
+		// "data": 2000,
+	})
 }
 
 func (g *GitLab) SetKey(appGitUrl string) *GitLab {
