@@ -3,9 +3,9 @@ package service
 import (
 	cfg "app-deploy-platform/3rd-api/gitlab/config"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -24,14 +24,20 @@ type ProCommitStr struct {
 	ID string `json:"id"`
 }
 
-func GetBranchByRepourl(httpurl string) []ProBranchStr {
+func GetBranchByRepourl(httpurl string) []string {
 	arr := strings.Split(httpurl, "/")
 	urlshort := arr[0] + "//" + arr[2]
 	proID := getIDByRepourl(httpurl)
 	proIDStr := strconv.Itoa(proID)
-	var branchs []ProBranchStr
-	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/branches", &branchs)
-	return branchs
+	var branchsMap []ProBranchStr
+	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/branches", &branchsMap)
+	var branchsSlicer []string
+	for _, v := range branchsMap {
+		// branchsSlicer.Append
+		branchsSlicer = append(branchsSlicer, v.BranchName)
+
+	}
+	return branchsSlicer
 }
 
 func GetCommitIDByRepourlAndBranch(httpurl, branchName string) string {
@@ -54,7 +60,7 @@ func getIDByRepourl(httpurl string) int {
 
 	var ids []ProStr
 	fillDataByGitlab(urlshort+"/api/v4/projects/?search="+proName, &ids)
-	fmt.Println(ids)
+
 	for _, v := range ids {
 		if v.Httpurl == httpurl {
 			return v.ID
@@ -67,7 +73,16 @@ func getIDByRepourl(httpurl string) int {
 func fillDataByGitlab(url string, ptr interface{}) {
 	client := &http.Client{}
 	reqest, _ := http.NewRequest("GET", url, nil)
-	reqest.Header.Add("PRIVATE-TOKEN", cfg.GetEnv().PrivateToken)
+
+	arr := strings.Split(url, "/")
+	urlshort := arr[0] + "//" + arr[2]
+	re, _ := regexp.Compile(`^https://github.dm-ai.cn.*$`)
+	if re.MatchString(urlshort) {
+		reqest.Header.Add("PRIVATE-TOKEN", "5X_hTFFr4RsvUod3GPzP")
+	} else {
+		reqest.Header.Add("PRIVATE-TOKEN", cfg.GetEnv().PrivateToken)
+	}
+
 	resp, err := client.Do(reqest)
 	if err != nil {
 		return
