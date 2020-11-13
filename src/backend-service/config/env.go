@@ -69,12 +69,13 @@ var (
 
 		Database: database.Config{
 			Config: mysql.Config{
+
+				User:   "adp_test",
+				Passwd: "adp_test",
+				DBName: "test_adp",
 				// User:                 "quzl",
 				// Passwd:               "quzl",
-				// DBName:               "quzl",
-				User:                 "adp_test",
-				Passwd:               "adp_test",
-				DBName:               "test_adp",
+				// DBName:               "dev_adp",
 				Addr:                 "192.168.3.151:3306",
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",
@@ -119,7 +120,7 @@ var (
 		ServiceCallJenkinsTriggerAddress:   tools.GetEnvDefault("SERVICE_CALL_JENKINS_TRIGGER_ADDRESS", localAddr+"/api/v1/multibranch-webhook-trigger").(string),
 		ServiceCallJenkinsJobUpdateAddress: tools.GetEnvDefault("SERVICE_CALL_JENKINS_JOB_UPDATE_ADDRESS", localAddr+"/api/v1/job").(string),
 		SearchOwnerChinaForEnglishNameUrl:  tools.GetEnvDefault("SEARCH_OWNER_CHINA_FOR_ENGLISH_NAME_URl", localAddr+"/api/v1/user/get-owner-china-name").(string),
-		ServiceBuildStatusSendUrl:          tools.GetEnvDefault("SERVICE_BUILD_STATUS_SEND_URL", "http://service-build-status-send.devops:8080/api/v1/deploy/result").(string),
+		ServiceBuildStatusSendUrl:          tools.GetEnvDefault("SERVICE_BUILD_STATUS_SEND_URL", localAddr+"/api/v1/deploy/result").(string),
 		ServiceCallJenkins:                 tools.GetEnvDefault("SERVICE_CALL_JENKINS", localAddr+"/api/v1/job").(string),
 		ServiceAdpBuildResultUrl:           tools.GetEnvDefault("SERVICE_ADP_BUILD_RESULT", localAddr+"/api/v1/result").(string),
 		DeployEnv:                          strings.ToLower(tools.GetEnvDefault("DEPLOY_ENV", "prd").(string)),

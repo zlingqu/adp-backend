@@ -1,0 +1,56 @@
+variables:
+    DOCKER_REGIS_URL: "docker.dm-ai.cn" #docker仓库地址
+    PROJECT_NAME: devops #项目代号，也是k8s的namespace的名字
+    SERVER_NAME: adp-backend #服务名
+    IMAGE_TAG_NAME: "${DOCKER_REGIS_URL}/${PROJECT_NAME}/${SERVER_NAME}:${CI_COMMIT_SHA}"  #使用代码的commitid作为image的tag
+    # IMAGE_TAG_NAME: "${DOCKER_REGIS_URL}/${PROJECT_NAME}/${SERVER_NAME}:${CI_RUNNER_TAGS}" #使用代码的tag名字作为image的tag
+  
+stages:
+  - build
+  - make_and_push_image
+  - k8s_deploy
+    
+job_build:
+  image: golang:1.15-alpine
+  stage: build
+  script:
+    - cp main src/main.go
+    - cd src
+    - go build -o build/${SERVER_NAME} -v ./
+    - cp -r 3rd-api/kubernetes/key build/
+    - cp -r 3rd-api/jenkins/conf build/
+  artifacts:
+    expire_in: 3 mos #制品包在gitlab上的保存时间（每小时定时删除过期制品），如果不设置，将永久保存。
+    paths:
+      - src/build/
+  only:
+    - quzl
+  tags:
+    - k8s-runner
+job_make_and_push_image:
+  image: 
+    name: docker.dm-ai.cn/public/kaniko-executor:debug-v1.3.0
+    entrypoint: [""]
+  stage: make_and_push_image
+  script:
+    - cp -r src/build .
+    - echo "{\"auths\":{\"$DOCKER_REGIS_URL\":{\"username\":\"$DOCKER_LIB_USER\",\"password\":\"$DOCKER_LIB_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/service-run.Dockerfile --destination $IMAGE_TAG_NAME #使用kaniko代替dind/sokcet模式，打镜像和上传
+  only:
+    - quzl
+  tags:
+    - k8s-runner
+  
+job_k8s_deploy:
+  image: 
+    name: docker.dm-ai.cn/public/alpine:kubectl-1.18.10
+  stage: k8s_deploy
+  script:
+    - cd /root
+    - echo $K8S_DEV_TOKEN|base64 -d > .kube/config
+    - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
+  only:
+    - quzl
+  tags:
+    - k8s-runner
+  
