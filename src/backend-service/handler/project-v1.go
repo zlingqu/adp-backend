@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -156,6 +157,9 @@ func PostProject(c *gin.Context) {
 
 	pj := NewProject()
 	pj.AppName = project.Name
+	if strings.HasSuffix(project.GitRepository, ".git") { //如果url写错，没有以.git结尾，将其加上
+		project.GitRepository = project.GitRepository + ".git"
+	}
 	pj.GitAddress = project.GitRepository
 	res, msg = pj.CreateJob()
 	if res != "ok" {
