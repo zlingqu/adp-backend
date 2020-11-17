@@ -247,7 +247,8 @@ func PutProject(c *gin.Context) {
 	}
 
 	//m.Model.Save(env)
-	m.Model.Save(project)
+	// m.Model.Save(project)
+	m.Model.Update(project)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
