@@ -1,8 +1,15 @@
 package handler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func HealCheck(c *gin.Context) {
 
-	c.String(200, "# TYPE health_info gauge\n"+"health_info{status=\"ok\", name=\"service-adp-deploy\", namespace=\"devops\"} 0\n")
+	msg := `# TYPE health_info gauge
+health_info{status="ok", name="adp-backend", namespace="devops"} 0
+`
+	c.String(http.StatusOK, msg)
 }

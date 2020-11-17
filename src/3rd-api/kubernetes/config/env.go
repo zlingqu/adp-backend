@@ -3,16 +3,24 @@ package config
 import (
 	"app-deploy-platform/common/tools"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
-func GetConfFile(fileName string) string {
-	log.Info(fmt.Sprintf("查找配置文件%s", fileName))
+func GetKeyFile(envName string) string {
+	log.Info(fmt.Sprintf("查找配置文件%s", envName))
 	dir, _ := os.Getwd()
-	confFile := dir + "/key/" + fileName
-	log.Info(fmt.Sprintf("配置文件为：%s", confFile))
-	return confFile
+	path := dir + "/key/" + envName
+	if _, err := os.Stat(path); err != nil {
+
+		log.Info(fmt.Sprintf("%s不存在\n", path))
+		return ""
+
+	}
+	log.Info(fmt.Sprintf("path %s 存在\n", path))
+	return path
+
 }
 
 type Env struct {

@@ -3,12 +3,13 @@ package handler
 import (
 	"app-deploy-platform/3rd-api/kubernetes/config"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetK8sKeyFile(c *gin.Context) {
-	env := c.DefaultQuery("env", "")
+	env := c.Query("env")
 
 	if env == "" {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -19,8 +20,15 @@ func GetK8sKeyFile(c *gin.Context) {
 		return
 	}
 
-	// 获得指定的配置文件
-	downFile := config.GetConfFile(env)
+	downFile := config.GetKeyFile(env)
+	if downFile == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 0,
+			"res":  "fail",
+			"msg":  "参数错误，找不到指定的key文件",
+		})
+		return
+	}
 	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "config"))
 	c.Writer.Header().Add("Content-Type", "application/octet-stream")
 	c.File(downFile)

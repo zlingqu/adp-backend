@@ -1,6 +1,7 @@
-BINARY_NAME=main
+BINARY_NAME=adp-backend
 srcDir=./src
-adpBackendImage=docker.dm-ai.cn/devops/adp-service:0.1.0
+tag=`date "+%Y-%m-%d-%H-%M"`
+adpBackendImage=docker.dm-ai.cn/devops/adp-backend:$(tag)
 
 init-env:
 	cp -f main $(srcDir)/main.go
@@ -16,7 +17,7 @@ compile: clean init-env
 	&& mv build ../
 
 run:
-	./build/$(BINARY_NAME)
+	cd build && ./$(BINARY_NAME)
 
 docker-build: compile
 	docker build -t $(adpBackendImage) -f service-run.Dockerfile .
@@ -32,6 +33,3 @@ docker-buildAndPush: docker-build
 
 docker-buildUseDocker:
 	docker build -t $(adpBackendImage) -f service-compile.Dockerfile .
-
-
-

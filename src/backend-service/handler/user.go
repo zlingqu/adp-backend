@@ -2,8 +2,9 @@ package handler
 
 import (
 	m "app-deploy-platform/backend-service/model"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetUserForName(c *gin.Context) {
@@ -27,7 +28,7 @@ func GetUserForName(c *gin.Context) {
 	})
 }
 
-func GetUserChinaName(c *gin.Context) {
+func GetUserChinaName(c *gin.Context) { //修改工单接口，会对用户做判定
 	ownerEnglishName := c.DefaultQuery("ownerEnglishName", "")
 	db := m.Model
 	var repData struct {

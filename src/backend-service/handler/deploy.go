@@ -7,14 +7,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/zuoshenglo/libs/logs/logrus"
-	tool "github.com/zuoshenglo/tools"
-	"gopkg.in/resty.v1"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/zuoshenglo/libs/logs/logrus"
+	tool "github.com/zuoshenglo/tools"
+	"gopkg.in/resty.v1"
 )
 
 func DeployOnline(c *gin.Context) {
@@ -56,17 +57,6 @@ func DeployOnline(c *gin.Context) {
 	}
 
 	res, msg, url, lb := "", "", "", ""
-
-	//log.Println("Update Jenkins configuration before building")
-	//res, msg = ReqServiceCallJenkinsJobUpdate(project.Data.Name, project.Data.GitRepository)
-	//if res != "ok" {
-	//	c.JSON(http.StatusOK, gin.H{
-	//		"code": 0,
-	//		"res": res,
-	//		"msg": msg,
-	//	})
-	//	return
-	//}
 
 	log.Info("First request service-operate-jenkins build")
 	res, msg, url, lb = ReqServiceOperateJenkinsBuild(env, project, d)
@@ -149,8 +139,7 @@ func ReqServiceOperateJenkinsBuild(env m.GetEnvById, project m.GetProjectById, d
 	reqJenkinsBuild.SetReqJenkinsBuildData(env.Data, project.Data, *d).SetReplics(env.Data.Name, project.Data.PodsNum).SetUnityAppName(project.Data.UnityAppId)
 	byte, _ := json.Marshal(reqJenkinsBuild)
 	client := resty.New()
-	r, e := client.R().SetHeader("Accept", "application/json").
-		SetBody(string(byte)).Post(config.GetEnv().JenkinsBuildAddress)
+	r, e := client.R().SetHeader("Accept", "application/json").SetBody(string(byte)).Post(config.GetEnv().JenkinsBuildAddress)
 	if e != nil {
 		log.Error(e)
 		return "fail", "fail", url, lb
@@ -263,7 +252,7 @@ func PostUpdate(c *gin.Context) {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
-			"res":  "fail",
+			"res":  "json转换失败",
 		})
 		return
 	}
@@ -275,7 +264,7 @@ func PostUpdate(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  e,
-			"res":  "fail",
+			"res":  e.Error(),
 		})
 		return
 	} else {
@@ -653,10 +642,10 @@ func getUserInfo(name string) (map[string]string, error) {
 }
 
 func getOwnerChinaName(ownerEnglishName string) (string, error) {
-	repUrl := config.GetEnv().SearchOwnerChinaForEnglishNameUrl
+	repURL := config.GetEnv().SearchOwnerChinaForEnglishNameUrl
 
 	client := resty.New()
-	r, e := client.R().SetQueryParam("ownerEnglishName", ownerEnglishName).Get(repUrl)
+	r, e := client.R().SetQueryParam("ownerEnglishName", ownerEnglishName).Get(repURL)
 
 	if e != nil {
 		log.Error(e)

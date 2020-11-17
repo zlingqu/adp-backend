@@ -3,9 +3,11 @@ package handler
 import (
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 func GetEnv(c *gin.Context) {
@@ -32,7 +34,7 @@ func GetEnv(c *gin.Context) {
 func GetEnvByID(c *gin.Context) {
 
 	var env m.Env
-	var count int64
+	// var count int64
 	var getEnvByID m.GetEnvByID
 	if err := c.ShouldBindUri(&getEnvByID); err != nil {
 		log.Error(err)
@@ -40,11 +42,19 @@ func GetEnvByID(c *gin.Context) {
 	}
 
 	log.Println(getEnvByID.ID)
-	m.Model.First(&env, getEnvByID.ID).Count(&count)
-
+	RowsAffected := m.Model.First(&env, getEnvByID.ID).RowsAffected
+	if RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"code":  404,
+			"count": RowsAffected,
+			"msg":   fmt.Sprintf("找不到id=%s的env", getEnvByID.ID),
+			"data":  nil,
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
-		"count": 1,
+		"count": RowsAffected,
 		"msg":   "ok",
 		"data":  env,
 	})
@@ -56,7 +66,14 @@ func PostEnv(c *gin.Context) {
 		log.Error(err)
 		// return
 	}
-	m.Model.Create(env)
+	RowsAffected := m.Model.Create(env).RowsAffected
+	if RowsAffected == 0 {
+		c.JSON(http.StatusNotImplemented, gin.H{
+			"code": 501,
+			"msg":  "写入数据库失败！",
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",

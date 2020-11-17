@@ -100,8 +100,13 @@ func (Project) TableName() string {
 
 func NewProject() *Project {
 	p := &Project{}
-	if !Model.HasTable(p.TableName()) {
-		Model.CreateTable(p)
+	// if !Model.HasTable(p.TableName()) {
+	// 	Model.CreateTable(p)
+	// }
+	if Model.HasTable(p.TableName()) { //判断表是否存在
+		Model.AutoMigrate(p) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(p) //不存在就创建新表
 	}
 	return p
 }

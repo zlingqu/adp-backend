@@ -12,4 +12,4 @@ FROM docker.dm-ai.cn/devops/base-image-golang-run-env:tag-v0.0.6 AS RUN
 RUN apk update && apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 WORKDIR /app
 COPY --from=COMPILE /app/build .
-CMD ["/app/main"]
+CMD ["/app/adp-backend"]

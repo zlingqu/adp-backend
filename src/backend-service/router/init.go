@@ -3,6 +3,7 @@ package router
 import (
 	. "app-deploy-platform/backend-service/handler"
 	r "app-deploy-platform/common/router"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,6 +33,7 @@ func deployRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 	v1.GET("/healthCheck", HealCheck)
 	v1.GET("/metrics", HealCheck)
 	v1.GET("/deploy/online/:id", DeployOnline)
+	v1.POST("/deploy/onlines", Mdeploy)
 	v1.POST("/deployments/list", PostDeployList)
 	v1.POST("/deployments/create", PostDeploy)
 	v1.POST("/deployments/update", PostUpdate)
@@ -50,8 +52,8 @@ func envRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 }
 
 func projectRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
-	v1.GET("/project", GetProject)
-	v1.GET("/project/:id", GetProjectById)
+	v1.GET("/project", GetProject)         //http://{{host}}/api/v1/project/?name=backend，如果没有name选项表示查看所有
+	v1.GET("/project/:id", GetProjectById) //http://{{host}}/api/v1/project/80
 	v1.POST("/project", PostProject)
 	v1.POST("/projects", PostProjects)
 	v1.PUT("/project", PutProject)

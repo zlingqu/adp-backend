@@ -12,7 +12,7 @@ type Space struct {
 	Owner     string    `json:"owner"`
 }
 
-func (Space) TableName() string {
+func (*Space) TableName() string {
 	return "space"
 }
 
@@ -24,8 +24,12 @@ type GetSpace struct {
 
 func NewSpace() *Space {
 	s := &Space{}
-	if !Model.HasTable(s.TableName()) {
-		Model.CreateTable(s)
+
+	if Model.HasTable(s.TableName()) { //判断表是否存在
+		Model.AutoMigrate(s) //存在就自动适配表，也就说原先没字段的就增加字段
+	} else {
+		Model.CreateTable(s) //不存在就创建新表
 	}
+
 	return s
 }

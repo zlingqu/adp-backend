@@ -5,14 +5,16 @@ import (
 	"app-deploy-platform/backend-service/handler"
 	"context"
 	"encoding/json"
+
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/antage/eventsource.v1"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"gopkg.in/antage/eventsource.v1"
 )
 
 func RunApi(router *gin.Engine, port string, debug bool) *http.Server {
@@ -57,33 +59,21 @@ func RunEventSource(port string) {
 	deployEnv := config.GetEnv().DeployEnv
 
 	go func() {
-		var appId uint
-		log.Println(appId)
 		for {
-			result, err := handler.SearchAdpResultInfo(deployEnv, "cpm")
+			result, err := handler.SearchAdpResultInfo(deployEnv, "x4c-mgepap-tp-service")
 			if err != nil {
 				log.Println("错误：", err)
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				continue
 			}
-			if result.ID > appId {
-				r, _ := json.Marshal(result)
-				es.SendEventMessage(string(r), "", "")
-			}
-			appId = result.ID
-
+			r, _ := json.Marshal(result)
+			es.SendEventMessage(string(r), "", "")
+			// log.Printf("respData: %v", string(r))
 			log.Printf("Hello has been sent (consumers: %d)", es.ConsumersCount())
-			log.Printf("当前appId为：%d\n", appId)
-			time.Sleep(2 * time.Second)
+			time.Sleep(20 * time.Second)
 		}
 	}()
-
-	go func() {
-		if err := http.ListenAndServe(":"+port, nil); err != nil {
-			log.Fatal("listen event source exception: ", err)
-		}
-	}()
-
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func WaitInterrupt(apiServer *http.Server) {
