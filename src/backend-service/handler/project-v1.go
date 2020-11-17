@@ -1,6 +1,7 @@
 package handler
 
 import (
+	jen_svc "app-deploy-platform/3rd-api/jenkins/service"
 	"app-deploy-platform/backend-service/config"
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
@@ -239,6 +240,11 @@ func PutProject(c *gin.Context) {
 	}
 
 	log.Println(*project)
+
+	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
+	if res == "fail" {
+		log.Println(msg)
+	}
 
 	//m.Model.Save(env)
 	m.Model.Save(project)
