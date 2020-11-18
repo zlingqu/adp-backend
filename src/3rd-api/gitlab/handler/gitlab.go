@@ -3,6 +3,7 @@ package handler
 import (
 	svc "app-deploy-platform/3rd-api/gitlab/service"
 	"net/http"
+	"net/url"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +34,8 @@ func GetCommitID(c *gin.Context) {
 func GetTags(c *gin.Context) {
 
 	gitHttpUrl := c.DefaultQuery("http_url_to_repo", "error")
-	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl) //url格式检查和转换
+	gitHttpUrl, _ = url.QueryUnescape(gitHttpUrl) //url格式编码转换
+	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl)   //url格式检查和转换
 	tagSlince := svc.GetTagsByRepourl(gitHttpUrl)
 	if tagSlince == nil {
 		c.JSON(http.StatusForbidden, gin.H{
@@ -55,7 +57,8 @@ func GetTags(c *gin.Context) {
 func GetBranchs(c *gin.Context) {
 
 	gitHttpUrl := c.DefaultQuery("http_url_to_repo", "error")
-	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl) //url格式检查和转换
+	gitHttpUrl, _ = url.QueryUnescape(gitHttpUrl) //url格式编码转换
+	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl)   //url格式检查和转换
 	branchSlince := svc.GetBranchByRepourl(gitHttpUrl)
 	if branchSlince == nil {
 		c.JSON(http.StatusForbidden, gin.H{
@@ -76,7 +79,8 @@ func GetBranchs(c *gin.Context) {
 
 func ProjectInfo(c *gin.Context) {
 	gitHttpUrl := c.DefaultQuery("http_url_to_repo", "error")
-	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl) //url格式检查和转换
+	gitHttpUrl, _ = url.QueryUnescape(gitHttpUrl) //url格式编码转换
+	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl)   //url格式检查和转换
 	id := svc.GetIDByRepourl(gitHttpUrl)
 	if id == -1 {
 		c.JSON(http.StatusNotFound, gin.H{
