@@ -36,6 +36,7 @@ job_make_and_push_image:
     - cp -r src/build .
     - echo "{\"auths\":{\"$DOCKER_REGIS_URL\":{\"username\":\"$DOCKER_LIB_USER\",\"password\":\"$DOCKER_LIB_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/service-run.Dockerfile --destination $IMAGE_TAG_NAME #使用kaniko代替dind/sokcet模式，打镜像和上传
+    - echo "docker image is: $IMAGE_TAG_NAME"
   only:
     - quzl
   tags:
