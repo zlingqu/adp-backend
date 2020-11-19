@@ -313,6 +313,10 @@ func PostDeploy(c *gin.Context) {
 	t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 	deploy.LastDeploy = t2
 
+	// if deploy.VersionControlMode=="GitCommitId" && deploy.GitCommitId=="last"{
+	// 	deploy.GitCommitId= "abc"
+	// }
+
 	m.Model.Create(deploy)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
