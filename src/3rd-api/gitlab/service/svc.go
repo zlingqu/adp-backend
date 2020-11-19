@@ -11,9 +11,9 @@ import (
 )
 
 type ProStr struct {
-	ID         int    `json:"id"`
-	Httpurl    string `json:"http_url_to_repo"`
-	BranchName string `json:"name"`
+	ID      int    `json:"id"`
+	Httpurl string `json:"http_url_to_repo"`
+	ProName string `json:"name"`
 }
 
 type ProBranchStr struct {
@@ -55,10 +55,11 @@ func GetTagsByRepourl(httpurl string) []string {
 	}
 	proIDStr := strconv.Itoa(proID)
 	var tagMap []ProTagStr
+
+	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/tags", &tagMap)
 	if len(tagMap) == 0 {
 		return []string{"null,没有tag"} //没有tag
 	}
-	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/tags", &tagMap)
 	var tagSlicer []string
 	for _, v := range tagMap {
 		tagSlicer = append(tagSlicer, v.TagName)
@@ -93,7 +94,7 @@ func GetIDByRepourl(httpurl string) int {
 	proName := proSlicer[0]
 
 	var ids []ProStr
-	fillDataByGitlab(urlshort+"/api/v4/projects/?search="+proName, &ids)
+	fillDataByGitlab(urlshort+"/api/v4/projects/?search="+proName+"&simple=true&per_page=300", &ids)
 
 	for _, v := range ids {
 		if v.Httpurl == httpurl {
@@ -130,8 +131,6 @@ func fillDataByGitlab(url string, ptr interface{}) {
 	} else {
 		reqest.Header.Add("PRIVATE-TOKEN", cfg.GetEnv().PrivateToken)
 	}
-	reqest.Header.Add("simple", "true")  //简洁输出
-	reqest.Header.Add("per_page", "100") //简洁输出
 
 	resp, err := client.Do(reqest)
 	if err != nil {

@@ -1,6 +1,8 @@
 package handler
 
 import (
+	gitlab_svc "app-deploy-platform/3rd-api/gitlab/service"
+	jen_svc "app-deploy-platform/3rd-api/jenkins/service"
 	"app-deploy-platform/backend-service/config"
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
@@ -9,7 +11,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -157,9 +158,9 @@ func PostProject(c *gin.Context) {
 
 	pj := NewProject()
 	pj.AppName = project.Name
-	if strings.HasSuffix(project.GitRepository, ".git") { //如果url写错，没有以.git结尾，将其加上
-		project.GitRepository = project.GitRepository + ".git"
-	}
+	m.Model.Create(project)
+
+	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	pj.GitAddress = project.GitRepository
 	res, msg = pj.CreateJob()
 	if res != "ok" {
@@ -171,8 +172,8 @@ func PostProject(c *gin.Context) {
 		return
 	}
 
-	log.Println("Successfully created project in Jenkins，Start insert data in mysql-table project。")
-	m.Model.Create(project)
+	// log.Println("Successfully created project in Jenkins，Start insert data in mysql-table project。")
+	// m.Model.Create(project)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -238,13 +239,19 @@ func PutProject(c *gin.Context) {
 		log.Error(err)
 	}
 
-	log.Println(*project)
+	// log.Println(*project)
 
-	//m.Model.Save(env)
 	m.Model.Save(project)
+
+	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
+	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
+	if res == "fail" {
+		log.Println(msg)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
+		
 		"msg":  "ok",
 	})
 }

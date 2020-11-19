@@ -1,6 +1,7 @@
 package handler
 
 import (
+	gitlab_svc "app-deploy-platform/3rd-api/gitlab/service"
 	"app-deploy-platform/backend-service/config"
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
@@ -55,7 +56,7 @@ func DeployOnline(c *gin.Context) {
 		})
 		return
 	}
-
+	project.Data.GitRepository = gitlab_svc.GitlabUrlCheck(project.Data.GitRepository)
 	res, msg, url, lb := "", "", "", ""
 
 	log.Info("First request service-operate-jenkins build")
