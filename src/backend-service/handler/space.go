@@ -19,7 +19,7 @@ func GetSpace(c *gin.Context) {
 		log.Error(err)
 	}
 
-	m.Model.Where("name LIKE ?", "%"+param.Name+"%").Find(&space).Count(&count)
+	m.DB.Where("name LIKE ?", "%"+param.Name+"%").Find(&space).Count(&count)
 	log.Info("GetSpace查出条数", count)
 
 	c.JSON(http.StatusOK, gin.H{
@@ -37,7 +37,7 @@ func PostSpace(c *gin.Context) {
 		log.Error(err)
 	}
 	log.Info(space)
-	rows := m.Model.Create(space).RowsAffected
+	rows := m.DB.Create(space).RowsAffected
 	if rows == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 1,
@@ -64,7 +64,7 @@ func PutSpace(c *gin.Context) {
 
 	log.Println(*space)
 
-	raws := m.Model.Model(space).Updates(*space).RowsAffected
+	raws := m.DB.Model(space).Updates(*space).RowsAffected
 	if raws == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 1,
@@ -86,7 +86,7 @@ func DeleteSpace(c *gin.Context) {
 	space.ID = tools.StringToUint(id)
 	log.Println("del id : ", id)
 
-	RowsAffected := m.Model.Delete(space).RowsAffected
+	RowsAffected := m.DB.Delete(space).RowsAffected
 	if RowsAffected == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"code": 404,

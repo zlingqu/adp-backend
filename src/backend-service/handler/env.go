@@ -19,7 +19,7 @@ func GetEnv(c *gin.Context) {
 		log.Error(err)
 	}
 
-	m.Model.Where("name LIKE ?", "%"+getEnv.Name+"%").Find(&env).Count(&count)
+	m.DB.Where("name LIKE ?", "%"+getEnv.Name+"%").Find(&env).Count(&count)
 	log.Println(env)
 	log.Println(count)
 
@@ -42,7 +42,7 @@ func GetEnvByID(c *gin.Context) {
 	}
 
 	log.Println(getEnvByID.ID)
-	RowsAffected := m.Model.First(&env, getEnvByID.ID).RowsAffected
+	RowsAffected := m.DB.First(&env, getEnvByID.ID).RowsAffected
 	if RowsAffected == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"code":  404,
@@ -66,7 +66,7 @@ func PostEnv(c *gin.Context) {
 		log.Error(err)
 		// return
 	}
-	RowsAffected := m.Model.Create(env).RowsAffected
+	RowsAffected := m.DB.Create(env).RowsAffected
 	if RowsAffected == 0 {
 		c.JSON(http.StatusNotImplemented, gin.H{
 			"code": 501,
@@ -89,7 +89,7 @@ func PostEnvs(c *gin.Context) {
 		// return
 	}
 
-	m.Model.Where("id in (?)", postEnvs.Ids).Find(&env).Count(&count)
+	m.DB.Where("id in (?)", postEnvs.Ids).Find(&env).Count(&count)
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"count": count,
@@ -107,7 +107,7 @@ func PutEnv(c *gin.Context) {
 	log.Println(*env)
 
 	//Model.Save(env)
-	m.Model.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
+	m.DB.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -118,7 +118,7 @@ func PutEnv(c *gin.Context) {
 func DeleteEnv(c *gin.Context) {
 	env := m.NewEnv()
 	env.ID = tools.StringToUint(c.Param("id"))
-	m.Model.Delete(env)
+	m.DB.Delete(env)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,

@@ -13,7 +13,7 @@ import (
 
 func GetProjectV2IdNameGitLang(c *gin.Context) {
 	projectName := c.DefaultQuery("name", "")
-	db := m.Model
+	db := m.DB
 	var repData []m.ProjectIdNameGitLang
 
 	// select db
@@ -33,7 +33,7 @@ func GetProjectV2IdNameGitLang(c *gin.Context) {
 
 func GetProjectV2IdNameGitLangProduct(c *gin.Context) {
 	projectName := c.DefaultQuery("name", "")
-	db := m.Model
+	db := m.DB
 	var repData []m.ProjectIdNameGitLangProduct
 
 	// select db
@@ -53,7 +53,7 @@ func GetProjectV2IdNameGitLangProduct(c *gin.Context) {
 
 func GetProjectV2IdNameGit(c *gin.Context) {
 	projectName := c.DefaultQuery("name", "")
-	db := m.Model
+	db := m.DB
 	var repData []m.ProjectIdNameGit
 
 	// select db
@@ -75,7 +75,7 @@ func GetProjectV2IdName(c *gin.Context) {
 	projectName := c.DefaultQuery("name", "")
 	languageType := c.DefaultQuery("language_type", "")
 
-	db := m.Model
+	db := m.DB
 	var repData []m.ProjectIdName
 
 	// select db
@@ -110,7 +110,7 @@ func GetProjectV2(c *gin.Context) {
 
 	limit, offset := tools.GetMysqlLimitOffset(c.DefaultQuery("page", "1"), c.DefaultQuery("size", "10"))
 	log.Println(fmt.Sprintf("req parms: name: %s, limit: %d, offset: %d", name, limit, offset))
-	db := m.Model.Where("name LIKE ?", "%"+name+"%")
+	db := m.DB.Where("name LIKE ?", "%"+name+"%")
 
 	if ownedProduct != "" {
 		db = db.Where("owned_product in (?)", strings.Split(ownedProduct, ","))

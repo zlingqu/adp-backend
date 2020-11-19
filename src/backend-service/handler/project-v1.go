@@ -88,7 +88,7 @@ func GetProject(c *gin.Context) {
 		// return
 	}
 
-	m.Model.Where("name LIKE ?", "%"+getProject.Name+"%").Find(&project).Count(&count)
+	m.DB.Where("name LIKE ?", "%"+getProject.Name+"%").Find(&project).Count(&count)
 	log.Println(project)
 	log.Println(count)
 
@@ -118,7 +118,7 @@ func GetProjectById(c *gin.Context) {
 	}
 
 	log.Println(getByID.ID)
-	m.Model.First(&project, getByID.ID).Count(&count)
+	m.DB.First(&project, getByID.ID).Count(&count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":   0,
@@ -158,7 +158,7 @@ func PostProject(c *gin.Context) {
 
 	pj := NewProject()
 	pj.AppName = project.Name
-	m.Model.Create(project)
+	m.DB.Create(project)
 
 	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	pj.GitAddress = project.GitRepository
@@ -224,7 +224,7 @@ func PostProjects(c *gin.Context) {
 		// return
 	}
 
-	m.Model.Where("id in (?)", postIds.Ids).Find(&project).Count(&count)
+	m.DB.Where("id in (?)", postIds.Ids).Find(&project).Count(&count)
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"count": count,
@@ -241,7 +241,7 @@ func PutProject(c *gin.Context) {
 
 	// log.Println(*project)
 
-	m.Model.Save(project)
+	m.DB.Save(project)
 
 	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
@@ -270,7 +270,7 @@ func DeleteProject(c *gin.Context) {
 
 	// get project name from db
 	project := m.NewProject()
-	m.Model.First(project, id)
+	m.DB.First(project, id)
 	// check
 	if project.Name == "" {
 		msg := "db not find id : " + string(id)
@@ -298,7 +298,7 @@ func DeleteProject(c *gin.Context) {
 	}
 
 	// delete info from table
-	m.Model.Delete(project)
+	m.DB.Delete(project)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",

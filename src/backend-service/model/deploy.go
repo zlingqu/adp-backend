@@ -312,7 +312,7 @@ func (r *ReqJenkinsBuild) SetUnityAppName(unityAppId int) {
 		var unityAppName struct {
 			Name string `json:"name"`
 		}
-		db := Model
+		db := DB
 		db = db.Table(Project{}.TableName())
 		db = db.Select("name")
 		db = db.Where("id = ?", unityAppId).First(&unityAppName)
