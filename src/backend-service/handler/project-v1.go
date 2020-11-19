@@ -241,7 +241,8 @@ func PutProject(c *gin.Context) {
 
 	// log.Println(*project)
 
-	m.DB.Save(project)
+	// m.DB.Save(project)
+	m.DB.Model(project).Updates(*project)
 
 	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
@@ -251,8 +252,8 @@ func PutProject(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
-		
-		"msg":  "ok",
+
+		"msg": "ok",
 	})
 }
 
