@@ -272,7 +272,7 @@ func PostUpdate(c *gin.Context) {
 		up.OwnerChinaName = userInfo
 	}
 
-	m.DB.Model(d).Updates(&up)
+	m.DB.Model(d.TableName()).Updates(&up)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
