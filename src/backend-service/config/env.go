@@ -78,7 +78,7 @@ var (
 				// DBName:               "dev_adp",
 				User:                 tools.GetEnvDefault("DB_USER", "adp_test").(string),
 				Passwd:               tools.GetEnvDefault("DB_PASSWD", "adp_test").(string),
-				DBName:               tools.GetEnvDefault("DB_NAMW", "test_adp").(string),
+				DBName:               tools.GetEnvDefault("DB_NAME", "test_adp").(string),
 				Addr:                 "192.168.3.151:3306",
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",
