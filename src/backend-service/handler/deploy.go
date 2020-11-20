@@ -248,7 +248,6 @@ func postServiceBuildStatusSend(jenkinsBuildToken string, status string) (string
 func PostUpdate(c *gin.Context) {
 	var up m.UpdateDeploy
 
-	d := m.NewDeploy()
 	if err := c.ShouldBind(&up); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
@@ -257,8 +256,10 @@ func PostUpdate(c *gin.Context) {
 		})
 		return
 	}
-
+	d := m.NewDeploy()
+	d.UpdateDeploy = up
 	log.Info(up)
+	log.Info(d)
 	userInfo, e := getOwnerChinaName(up.OwnerEnglishName)
 	if e != nil {
 		log.Info("find user name error :", e)
@@ -273,7 +274,7 @@ func PostUpdate(c *gin.Context) {
 	}
 
 	// m.DB.Model(d.TableName()).Updates(&up)
-	m.DB.Model(up).Updates(*d)
+	m.DB.Model(d).Updates(*d)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
