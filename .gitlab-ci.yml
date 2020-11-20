@@ -16,6 +16,7 @@ job_build:
   script:
     - cp main src/main.go
     - cd src
+    - export GOPROXY=https://mirrors.aliyun.com/goproxy/
     - go build -o build/${SERVER_NAME} -v ./
     - cp -r 3rd-api/kubernetes/key build/
     - cp -r 3rd-api/jenkins/conf build/
