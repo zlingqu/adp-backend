@@ -273,7 +273,7 @@ func PostUpdate(c *gin.Context) {
 	}
 
 	// m.DB.Model(d.TableName()).Updates(&up)
-	m.DB.Model(d).Updates(*d)
+	m.DB.Model(up).Updates(*d)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
