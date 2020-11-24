@@ -44,54 +44,54 @@ type Project struct {
 	Description               string    `json:"description" gorm:"type:text"`          ////
 	GitRepository             string    `json:"git_repository" gorm:"type:varchar(300)"`
 	LanguageType              string    `json:"language_type" gorm:"type:varchar(80)"`
-	IfAddUnityProject         *bool     `json:"if_add_unity_project"`
+	IfAddUnityProject         bool     `json:"if_add_unity_project" gorm:"type:boolean"`
 	UnityAppId                int       `json:"unity_app_id"`
 	DeployEnvType             string    `json:"deploy_env_type" gorm:"type:varchar(80)"`
 	ServeType                 string    `json:"serve_type" gorm:"type:varchar(80)"`
 	ReplicationControllerType string    `json:"replication_controller_type" gorm:"type:varchar(80)"`
-	IfUseDomainName           bool      `json:"if_use_domain_name"`
+	IfUseDomainName           bool      `json:"if_use_domain_name" gorm:"type:boolean"`
 	DomainName                string    `json:"domain_name" gorm:"type:varchar(80)"`
-	IfUseHttps                *bool     `json:"if_use_https"`
-	IfUseHttp                 *bool     `json:"if_use_http"`
-	IfUseGrpc                 *bool     `json:"if_use_grpc"`
-	IfUseGbs                  *bool     `json:"if_use_gbs"`
-	IfUseSticky               *bool     `json:"if_use_sticky"`
-	IfCompile                 *bool     `json:"if_compile"`
-	IfCompileCache            *bool     `json:"if_compile_cache"`
-	IfCompileParam            *bool     `json:"if_compile_param"`
+	IfUseHttps                bool     `json:"if_use_https" gorm:"type:boolean"`
+	IfUseHttp                 bool     `json:"if_use_http" gorm:"type:boolean"`
+	IfUseGrpc                 bool     `json:"if_use_grpc" gorm:"type:boolean"`
+	IfUseGbs                  bool     `json:"if_use_gbs" gorm:"type:boolean"`
+	IfUseSticky               bool     `json:"if_use_sticky" gorm:"type:boolean"`
+	IfCompile                 bool     `json:"if_compile" gorm:"type:boolean"`
+	IfCompileCache            bool     `json:"if_compile_cache" gorm:"type:boolean"`
+	IfCompileParam            bool     `json:"if_compile_param" gorm:"type:boolean"`
 	CompileParam              string    `json:"compile_param" gorm:"type:varchar(300)"`
-	IfCompileImage            *bool     `json:"if_compile_image"`
+	IfCompileImage            bool     `json:"if_compile_image" gorm:"type:boolean"`
 	CompileImage              string    `json:"compile_image" gorm:"type:varchar(500)"`
-	IfMakeImage               *bool     `json:"if_make_image"`
-	IfUseModel                *bool     `json:"if_use_model"`
-	IfUseGitManagerModel      *bool     `json:"if_use_git_manager_model"`
+	IfMakeImage               bool     `json:"if_make_image" gorm:"type:boolean"`
+	IfUseModel                bool     `json:"if_use_model" gorm:"type:boolean"`
+	IfUseGitManagerModel      bool     `json:"if_use_git_manager_model" gorm:"type:boolean"`
 	ModelGitRepository        string    `json:"model_git_repository"  gorm:"type:varchar(300)"`
-	IfSaveModelBuildComputer  *bool     `json:"if_save_model_build_computer"`
-	IfUseConfigmap            *bool     `json:"if_use_configmap"`
-	IfUseAutoDeployFile       *bool     `json:"if_use_auto_deploy_file"`
+	IfSaveModelBuildComputer  bool     `json:"if_save_model_build_computer" gorm:"type:boolean"`
+	IfUseConfigmap            bool     `json:"if_use_configmap" gorm:"type:boolean"`
+	IfUseAutoDeployFile       bool     `json:"if_use_auto_deploy_file" gorm:"type:boolean"`
 	AutoDeployContent         string    `json:"auto_deploy_content" gorm:"type:text"`
-	IfDeploy                  *bool     `json:"if_deploy"`
+	IfDeploy                  bool     `json:"if_deploy" gorm:"type:boolean"`
 	PodsNum                   string    `json:"pods_num"`
 	CopyCount                 int       `json:"copy_count"`
 	ContainerPort             int       `json:"container_port"`
 	ServiceListenPort         string    `json:"service_listen_port" gorm:"type:varchar(80)"`
-	IfUseCustomDockerfile     *bool     `json:"if_use_custom_dockerfile"`
-	IfUseRootDockerfile       *bool     `json:"if_use_root_dockerfile"`
+	IfUseCustomDockerfile     bool     `json:"if_use_custom_dockerfile" gorm:"type:boolean"`
+	IfUseRootDockerfile       bool     `json:"if_use_root_dockerfile" gorm:"type:boolean"`
 	DockerfileContent         string    `json:"dockerfile_content" gorm:"type:text"`
 	CpuMinRequire             int       `json:"cpu_min_require"`
 	CpuMaxRequire             int       `json:"cpu_max_require"`
 	MemoryMinRequire          int       `json:"memory_min_require"`
 	MemoryMaxRequire          int       `json:"memory_max_require"`
-	IfStorageLocale           *bool     `json:"if_storage_locale"`
+	IfStorageLocale           bool     `json:"if_storage_locale" gorm:"type:boolean"`
 	StoragePath               string    `json:"storage_path" gorm:"type:varchar(80)"`
-	IfUseGpuCard              *bool     `json:"if_use_gpu_card"`
+	IfUseGpuCard              bool     `json:"if_use_gpu_card" gorm:"type:boolean"`
 	GpuControlMode            string    `json:"gpu_control_mode" gorm:"type:varchar(80)"`
 	GpuCardCount              int       `json:"gpu_card_count"`
 	GpuMemCount               int       `json:"gpu_mem_count"`
-	IfUseIstio                *bool     `json:"if_use_istio"`
-	IfUseApolloOfflineEnv     *bool     `json:"if_use_apollo_offline_env"`
-	IfNeedCheck               *bool     `json:"if_need_check"`
-	IfCheckPodsStatus         *bool     `json:"if_check_pods_status"`
+	IfUseIstio                bool     `json:"if_use_istio" gorm:"type:boolean"`
+	IfUseApolloOfflineEnv     bool     `json:"if_use_apollo_offline_env" gorm:"type:boolean"`
+	IfNeedCheck               bool     `json:"if_need_check" gorm:"type:boolean"`
+	IfCheckPodsStatus         bool     `json:"if_check_pods_status" gorm:"type:boolean"`
 }
 
 func (Project) TableName() string {
