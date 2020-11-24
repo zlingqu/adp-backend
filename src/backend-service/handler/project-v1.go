@@ -235,7 +235,7 @@ func PostProjects(c *gin.Context) {
 
 func PutProject(c *gin.Context) {
 	project := m.NewProject()
-	if err := c.ShouldBind(project); err != nil {
+	if err := c.ShouldBindJSON(project); err != nil {
 		log.Error(err)
 	}
 
