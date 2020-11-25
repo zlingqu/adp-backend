@@ -37,7 +37,7 @@ func GetBranchByRepourl(httpurl string) []string {
 	}
 	proIDStr := strconv.Itoa(proID)
 	var branchsMap []ProBranchStr
-	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/branches", &branchsMap)
+	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/branches"+"?simple=true&per_page=300", &branchsMap)
 	var branchsSlicer []string
 	for _, v := range branchsMap {
 		branchsSlicer = append(branchsSlicer, v.BranchName)
@@ -56,7 +56,7 @@ func GetTagsByRepourl(httpurl string) []string {
 	proIDStr := strconv.Itoa(proID)
 	var tagMap []ProTagStr
 
-	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/tags", &tagMap)
+	fillDataByGitlab(urlshort+"/api/v4/projects/"+proIDStr+"/repository/tags"+"?simple=true&per_page=300", &tagMap)
 	if len(tagMap) == 0 {
 		return []string{"null,没有tag"} //没有tag
 	}

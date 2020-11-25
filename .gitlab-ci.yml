@@ -8,7 +8,8 @@ variables:
 stages:
   - build
   - make_and_push_image
-  - k8s_deploy
+  - k8s_dev_deploy
+  - k8s_prd_deploy
     
 job_build:
   image: golang:1.15-alpine
@@ -16,6 +17,7 @@ job_build:
   script:
     - cp main src/main.go
     - cd src
+    - export GOPROXY=https://mirrors.aliyun.com/goproxy/
     - go build -o build/${SERVER_NAME} -v ./
     - cp -r 3rd-api/kubernetes/key build/
     - cp -r 3rd-api/jenkins/conf build/
@@ -27,6 +29,7 @@ job_build:
     - quzl
   tags:
     - k8s-runner
+    
 job_make_and_push_image:
   image: 
     name: docker.dm-ai.cn/public/kaniko-executor:debug-v1.3.0
@@ -42,10 +45,10 @@ job_make_and_push_image:
   tags:
     - k8s-runner
   
-job_k8s_deploy:
+job_k8s_dev_deploy:
   image: 
     name: docker.dm-ai.cn/public/alpine:kubectl-1.18.10
-  stage: k8s_deploy
+  stage: k8s_dev_deploy
   script:
     - cd /root
     - echo $K8S_DEV_TOKEN|base64 -d > .kube/config
@@ -54,4 +57,17 @@ job_k8s_deploy:
     - quzl
   tags:
     - k8s-runner
-  
+
+job_k8s_prd_deploy:
+  image: 
+    name: docker.dm-ai.cn/public/alpine:kubectl-1.18.10
+  stage: k8s_prd_deploy
+  script:
+    - cd /root
+    - echo $K8S_PRD_TOKEN|base64 -d > .kube/config
+    - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
+  only:
+    - quzl
+  tags:
+    - k8s-runner
+  when: manual

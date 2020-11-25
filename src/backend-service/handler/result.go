@@ -14,7 +14,7 @@ func GetResult(c *gin.Context) {
 
 	deployEnv := c.DefaultQuery("deployEnv", "prd")
 	name := c.DefaultQuery("name", "test")
-	db := m.Model
+	db := m.DB
 	db.Where("name = ?", name).Where("deploy_env = ?", deployEnv).Order("created_at desc").Limit(1).Find(result)
 	// if len(result) == 0 {
 	if result.ID == 0 {
@@ -45,7 +45,7 @@ func PostFormResult(c *gin.Context) {
 	result.DeployEnv = c.PostForm("deploy_env")
 	result.Version = c.PostForm("version")
 
-	m.Model.Create(result)
+	m.DB.Create(result)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",
@@ -66,7 +66,7 @@ func PostResult(c *gin.Context) {
 		return
 	}
 
-	m.Model.Create(result)
+	m.DB.Create(result)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",

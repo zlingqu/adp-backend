@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"reflect"
 )
 
 func GetEnvDefault(key string, defVal interface{}) interface{} {
@@ -78,4 +79,17 @@ func Float64ToInt64(num float64) int64 {
 	string := strconv.FormatFloat(num, 'f', -1, 64)
 	int64, _ := strconv.ParseInt(string, 10, 64)
 	return int64
+}
+
+
+//结构体转成map
+func Struct2Map(obj interface{}) map[string]interface{} {
+    t := reflect.TypeOf(obj)
+    v := reflect.ValueOf(obj)
+
+    var data = make(map[string]interface{})
+    for i := 0; i < t.NumField(); i++ {
+        data[t.Field(i).Name] = v.Field(i).Interface()
+    }
+    return data
 }

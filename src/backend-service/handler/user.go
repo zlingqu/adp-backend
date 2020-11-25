@@ -10,7 +10,7 @@ import (
 func GetUserForName(c *gin.Context) {
 	// init all param
 	userName := c.DefaultQuery("name", "")
-	db := m.Model
+	db := m.DB
 	var repData []m.UserInfo
 
 	// select db
@@ -30,7 +30,7 @@ func GetUserForName(c *gin.Context) {
 
 func GetUserChinaName(c *gin.Context) { //修改工单接口，会对用户做判定
 	ownerEnglishName := c.DefaultQuery("ownerEnglishName", "")
-	db := m.Model
+	db := m.DB
 	var repData struct {
 		OwnerChinaName string `json:"owner_china_name"`
 	}
@@ -54,7 +54,7 @@ func SyncLdapUser(c *gin.Context) {
 
 	// if table user is not exists, create.
 	u := m.NewUser()
-	db := m.Model
+	db := m.DB
 
 	misLdapService := m.NewMisLdapService()
 	misLdapService.Request()

@@ -32,7 +32,7 @@ func DeployOnline(c *gin.Context) {
 
 	// select table deploy
 	d := m.NewDeploy()
-	m.Model.First(d, ID.ID)
+	m.DB.First(d, ID.ID)
 	log.Info("User attempts to deploy : ", d)
 
 	// get env by id
@@ -82,7 +82,7 @@ func DeployOnline(c *gin.Context) {
 		d.JenkinsBuildToken = url
 		t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 		d.LastDeploy = t2
-		m.Model.Save(d)
+		m.DB.Save(d)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -180,7 +180,7 @@ func DeleteDeploy(c *gin.Context) {
 
 	d := m.NewDeploy()
 	d.ID = ID.ID
-	m.Model.Delete(d)
+	m.DB.Delete(d)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -201,7 +201,7 @@ func PostChange(c *gin.Context) {
 
 	log.Info("postChange : ")
 	var d m.Deploy
-	m.Model.Model(&d).Where("jenkins_build_token = ?", postChange.Token).Update("status", postChange.Status)
+	m.DB.Model(&d).Where("jenkins_build_token = ?", postChange.Token).Update("status", postChange.Status)
 	// 通知的结果保存到db完整后，发送消息通知service-build-status-send 服务。
 	res, msg := postServiceBuildStatusSend(postChange.Token, postChange.Status)
 	if res != "ok" {
@@ -248,7 +248,6 @@ func postServiceBuildStatusSend(jenkinsBuildToken string, status string) (string
 func PostUpdate(c *gin.Context) {
 	var up m.UpdateDeploy
 
-	d := m.NewDeploy()
 	if err := c.ShouldBind(&up); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusOK, gin.H{
@@ -257,8 +256,10 @@ func PostUpdate(c *gin.Context) {
 		})
 		return
 	}
-
+	d := m.NewDeploy()
+	d.UpdateDeploy = up
 	log.Info(up)
+	log.Info(d)
 	userInfo, e := getOwnerChinaName(up.OwnerEnglishName)
 	if e != nil {
 		log.Info("find user name error :", e)
@@ -272,7 +273,8 @@ func PostUpdate(c *gin.Context) {
 		up.OwnerChinaName = userInfo
 	}
 
-	m.Model.Model(d).Update(&up)
+	// m.DB.Model(d.TableName()).Updates(&up)
+	m.DB.Model(d).Updates(*d)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -313,7 +315,11 @@ func PostDeploy(c *gin.Context) {
 	t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 	deploy.LastDeploy = t2
 
-	m.Model.Create(deploy)
+	// if deploy.VersionControlMode=="GitCommitId" && deploy.GitCommitId=="last"{
+	// 	deploy.GitCommitId= "abc"
+	// }
+
+	m.DB.Create(deploy)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"res":  "ok",
@@ -334,7 +340,7 @@ func GetDeploy(c *gin.Context) {
 	ownerEnglishNameList := make([]string, 0)
 	ownerChineseNameList := make([]string, 0)
 	var count int64
-	db := m.Model
+	db := m.DB
 	if rDeployNamespace != "" {
 		db = db.Where("k8s_namespace in (?)", strings.Split(rDeployNamespace, ","))
 	}
@@ -544,7 +550,7 @@ func PostDeployList(c *gin.Context) {
 			ownerEnglishNameList = append(ownerEnglishNameList, k)
 			ownerChineseNameList = append(ownerChineseNameList, v)
 		}
-		m.Model.Where("name like ?", "%"+name.Name+"%").
+		m.DB.Where("name like ?", "%"+name.Name+"%").
 			Or("app_id in (?)", appIdList).
 			Or("owner_english_name in (?)", ownerEnglishNameList).
 			Or("owner_china_name in (?)", ownerChineseNameList).Find(&deploy).Count(&count)
@@ -552,7 +558,7 @@ func PostDeployList(c *gin.Context) {
 
 	log.Info("Start querying table deploy")
 	if name.Name == "" {
-		m.Model.Find(&deploy).Count(&count)
+		m.DB.Find(&deploy).Count(&count)
 	}
 
 	//log.Println(reqProjectData)

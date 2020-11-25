@@ -55,7 +55,7 @@ func CallJenkinsApiByID(envID, id uint, tag string) string {
 
 	// select table deploy
 	d := m.NewDeploy()
-	m.Model.First(d, id)
+	m.DB.First(d, id)
 	log.Info("User attempts to deploy : ", d)
 
 	// get env by id
@@ -100,7 +100,7 @@ func CallJenkinsApiByID(envID, id uint, tag string) string {
 		d.JenkinsBuildToken = url
 		t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 		d.LastDeploy = t2
-		m.Model.Save(d)
+		m.DB.Save(d)
 		return "ok"
 	}
 	fmt.Println(msg)
