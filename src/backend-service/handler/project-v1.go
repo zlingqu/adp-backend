@@ -239,13 +239,15 @@ func PutProject(c *gin.Context) {
 		log.Error(err)
 	}
 
-	// log.Println(*project)
-
 	// m.DB.Save(project)
-
 	// m.DB.Model(project).Updates(*project)
-	projectMap := tools.Struct2Map(project) //不能更新0值，这里转为map再更新 https://gorm.io/zh_CN/docs/update.html
-	m.DB.Model(project).Updates(projectMap)
+	if err := m.DB.Model(project).Where("name=?", project.Name).Updates(*project).Error; err != nil { //必须要指定where
+		fmt.Println("更新失败")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 500,
+			"msg":  err,
+		})
+	}
 
 	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
