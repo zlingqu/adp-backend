@@ -243,8 +243,9 @@ func PutProject(c *gin.Context) {
 
 	// m.DB.Save(project)
 
-	// m.DB.Model(project).Updates(*project) 不能更新非0指，所以要使用select选择一下
-	m.DB.Model(project).Select(project.Name).Updates(*project)
+	// m.DB.Model(project).Updates(*project)
+	projectMap := tools.Struct2Map(project) //不能更新0值，这里转为map再更新 https://gorm.io/zh_CN/docs/update.html
+	m.DB.Model(project).Updates(projectMap)
 
 	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
