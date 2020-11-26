@@ -69,16 +69,9 @@ var (
 
 		Database: database.Config{
 			Config: mysql.Config{
-
-				// User:   "adp_test",
-				// Passwd: "adp_test",
-				// DBName: "test_adp",
-				// User:                 "quzl",
-				// Passwd:               "quzl",
-				// DBName:               "dev_adp",
-				User:                 tools.GetEnvDefault("DB_USER", "adp_test").(string),
-				Passwd:               tools.GetEnvDefault("DB_PASSWD", "adp_test").(string),
-				DBName:               tools.GetEnvDefault("DB_NAME", "test_adp").(string),
+				User:                 tools.GetEnvDefault("DB_USER", "quzl").(string),
+				Passwd:               tools.GetEnvDefault("DB_PASSWD", "quzl").(string),
+				DBName:               tools.GetEnvDefault("DB_NAME", "dev_adp").(string),
 				Addr:                 "192.168.3.151:3306",
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",

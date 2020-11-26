@@ -64,7 +64,7 @@ func PutSpace(c *gin.Context) {
 
 	log.Println(*space)
 
-	raws := m.DB.Model(space).Updates(*space).RowsAffected
+	raws := m.DB.Updates(*space).RowsAffected
 	if raws == 0 {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": 1,
