@@ -106,8 +106,8 @@ func PutEnv(c *gin.Context) {
 
 	log.Println(*env)
 
-	//Model.Save(env)
-	m.DB.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
+	// m.DB.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
+	m.DB.Updates(&env) //这种写法，需要写出mysql的所有列
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
