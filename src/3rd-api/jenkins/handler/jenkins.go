@@ -3,13 +3,15 @@ package handler
 import (
 	"app-deploy-platform/3rd-api/jenkins/config"
 	m "app-deploy-platform/3rd-api/jenkins/model"
+	svc "app-deploy-platform/3rd-api/jenkins/service"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/resty.v1"
-	"net/http"
-	"time"
 )
 
 func PostJob(c *gin.Context) {
@@ -72,7 +74,7 @@ func PutJob(c *gin.Context) {
 		return
 	}
 
-	res, msg := UpdateJenkinsJobConfig(app.Name, app.GitAddress)
+	res, msg := svc.UpdateJenkinsJobConfig(app.Name, app.GitAddress)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -80,28 +82,6 @@ func PutJob(c *gin.Context) {
 		"res":  msg,
 	})
 
-}
-
-func UpdateJenkinsJobConfig(appName string, appGitAddress string) (res string, msg string) {
-	jenkinsJobUpdateUrl := config.GetEnv().JenkinsJobUpdateAddress + appName + "/config.xml"
-	jenkinsCfgFile := m.JenkinsJobCfgFile(appName, appGitAddress)
-	client := resty.New()
-	r, e := client.R().SetHeader("Content-Type", "text/xml").SetBody([]byte(jenkinsCfgFile)).Post(jenkinsJobUpdateUrl)
-
-	if e != nil {
-		log.Error(e)
-		return "fail", "Failed to request Jenkins to update configuration"
-	}
-
-	if r.StatusCode() != 200 {
-		return "fail", "Failed to request Jenkins to update configuration, status code is not 200"
-	}
-
-	if string(r.Body()) != "" {
-		return "fail", "Failed to request Jenkins to update configuration, body is not null"
-	}
-
-	return "ok", "ok"
 }
 
 func PostMultibranchWebhookTrigger(c *gin.Context) {

@@ -1,6 +1,8 @@
 package handler
 
 import (
+	gitlab_svc "app-deploy-platform/3rd-api/gitlab/service"
+	jen_svc "app-deploy-platform/3rd-api/jenkins/service"
 	"app-deploy-platform/backend-service/config"
 	m "app-deploy-platform/backend-service/model"
 	"app-deploy-platform/common/tools"
@@ -86,7 +88,7 @@ func GetProject(c *gin.Context) {
 		// return
 	}
 
-	m.Model.Where("name LIKE ?", "%"+getProject.Name+"%").Find(&project).Count(&count)
+	m.DB.Where("name LIKE ?", "%"+getProject.Name+"%").Find(&project).Count(&count)
 	log.Println(project)
 	log.Println(count)
 
@@ -116,7 +118,7 @@ func GetProjectById(c *gin.Context) {
 	}
 
 	log.Println(getByID.ID)
-	m.Model.First(&project, getByID.ID).Count(&count)
+	m.DB.First(&project, getByID.ID).Count(&count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":   0,
@@ -156,6 +158,9 @@ func PostProject(c *gin.Context) {
 
 	pj := NewProject()
 	pj.AppName = project.Name
+	m.DB.Create(project)
+
+	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
 	pj.GitAddress = project.GitRepository
 	res, msg = pj.CreateJob()
 	if res != "ok" {
@@ -167,8 +172,8 @@ func PostProject(c *gin.Context) {
 		return
 	}
 
-	log.Println("Successfully created project in Jenkins，Start insert data in mysql-table project。")
-	m.Model.Create(project)
+	// log.Println("Successfully created project in Jenkins，Start insert data in mysql-table project。")
+	// m.Model.Create(project)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
@@ -219,7 +224,7 @@ func PostProjects(c *gin.Context) {
 		// return
 	}
 
-	m.Model.Where("id in (?)", postIds.Ids).Find(&project).Count(&count)
+	m.DB.Where("id in (?)", postIds.Ids).Find(&project).Count(&count)
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"count": count,
@@ -230,18 +235,30 @@ func PostProjects(c *gin.Context) {
 
 func PutProject(c *gin.Context) {
 	project := m.NewProject()
-	if err := c.ShouldBind(project); err != nil {
+	if err := c.ShouldBindJSON(project); err != nil {
 		log.Error(err)
 	}
 
-	log.Println(*project)
+	// m.DB.Save(project)
+	// m.DB.Model(project).Updates(*project)
+	if err := m.DB.Model(project).Where("name=?", project.Name).Updates(*project).Error; err != nil { //必须要指定where
+		fmt.Println("更新失败")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": 500,
+			"msg":  err,
+		})
+	}
 
-	//m.Model.Save(env)
-	m.Model.Save(project)
+	project.GitRepository = gitlab_svc.GitlabUrlCheck(project.GitRepository) //url转成http格式，并传递到jenkins的接口
+	res, msg := jen_svc.UpdateJenkinsJobConfig(project.Name, project.GitRepository)
+	if res == "fail" {
+		log.Println(msg)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
-		"msg":  "ok",
+
+		"msg": "ok",
 	})
 }
 
@@ -259,7 +276,7 @@ func DeleteProject(c *gin.Context) {
 
 	// get project name from db
 	project := m.NewProject()
-	m.Model.First(project, id)
+	m.DB.First(project, id)
 	// check
 	if project.Name == "" {
 		msg := "db not find id : " + string(id)
@@ -287,7 +304,7 @@ func DeleteProject(c *gin.Context) {
 	}
 
 	// delete info from table
-	m.Model.Delete(project)
+	m.DB.Delete(project)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"msg":  "ok",

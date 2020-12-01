@@ -223,36 +223,36 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.AppName = project.Name
 	r.ProductName = d.K8sNamespace
 	r.CodeLanguage = project.LanguageType
-	r.IfAddUnityProject = project.IfAddUnityProject
+	r.IfAddUnityProject = *project.IfAddUnityProject
 	r.DeployEnvType = project.DeployEnvType
-	r.IfCompile = project.IfCompile
-	r.IfCompileCache = project.IfCompileCache
-	r.IfCompileParam = project.IfCompileParam
+	r.IfCompile = *project.IfCompile
+	r.IfCompileCache = *project.IfCompileCache
+	r.IfCompileParam = *project.IfCompileParam
 	r.CompileParam = project.CompileParam
-	r.IfCompileImage = project.IfCompileImage
+	r.IfCompileImage = *project.IfCompileImage
 	r.CompileImage = project.CompileImage
-	r.IfMakeImage = project.IfMakeImage
-	r.IfUseDomainName = project.IfUseDomainName
+	r.IfMakeImage = *project.IfMakeImage
+	r.IfUseDomainName = *project.IfUseDomainName
 	r.DomainName = project.DomainName
-	r.IfUseHttps = project.IfUseHttps
-	r.IfUseGrpc = project.IfUseGrpc
-	r.IfUseGbs = project.IfUseGbs
-	r.IfUseSticky = project.IfUseSticky
-	r.IfUseHttp = project.IfUseHttp
-	r.IfDeploy = project.IfDeploy
-	r.IfUseModel = project.IfUseModel
-	r.IfUseGitManagerModel = project.IfUseGitManagerModel
+	r.IfUseHttps = *project.IfUseHttps
+	r.IfUseGrpc = *project.IfUseGrpc
+	r.IfUseGbs = *project.IfUseGbs
+	r.IfUseSticky = *project.IfUseSticky
+	r.IfUseHttp = *project.IfUseHttp
+	r.IfDeploy = *project.IfDeploy
+	r.IfUseModel = *project.IfUseModel
+	r.IfUseGitManagerModel = *project.IfUseGitManagerModel
 	r.ModelGitRepository = project.ModelGitRepository
-	r.IfSaveModelBuildComputer = project.IfSaveModelBuildComputer
-	r.IfUseConfigmap = project.IfUseConfigmap
-	r.IfUseAutoDeployFile = project.IfUseAutoDeployFile
+	r.IfSaveModelBuildComputer = *project.IfSaveModelBuildComputer
+	r.IfUseConfigmap = *project.IfUseConfigmap
+	r.IfUseAutoDeployFile = *project.IfUseAutoDeployFile
 	r.AutoDeployContent = project.AutoDeployContent
-	r.IfUseCustomDockerfile = project.IfUseCustomDockerfile
-	r.IfUseRootDockerfile = project.IfUseRootDockerfile
+	r.IfUseCustomDockerfile = *project.IfUseCustomDockerfile
+	r.IfUseRootDockerfile = *project.IfUseRootDockerfile
 	r.DockerfileContent = project.DockerfileContent
 	r.ServeType = project.ServeType
 	r.ReplicationControllerType = project.ReplicationControllerType
-	r.IfUseGpuCard = project.IfUseGpuCard
+	r.IfUseGpuCard = *project.IfUseGpuCard
 	r.GpuControlMode = project.GpuControlMode
 	r.GpuCardCount = project.GpuCardCount
 	r.GpuMemCount = project.GpuMemCount
@@ -274,11 +274,11 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.CpuLimit = strconv.Itoa(project.CpuMaxRequire) + "m"
 	r.MemoryRequest = strconv.Itoa(project.MemoryMinRequire) + "Mi"
 	r.MemoryLimit = strconv.Itoa(project.MemoryMaxRequire) + "Mi"
-	r.IfStorageLocale = project.IfStorageLocale
+	r.IfStorageLocale = *project.IfStorageLocale
 	r.StoragePath = project.StoragePath
-	r.IfCheckPodsStatus = project.IfCheckPodsStatus
-	r.IfUseIstio = project.IfUseIstio
-	r.IfUseApolloOfflineEnv = project.IfUseApolloOfflineEnv
+	r.IfCheckPodsStatus = *project.IfCheckPodsStatus
+	r.IfUseIstio = *project.IfUseIstio
+	r.IfUseApolloOfflineEnv = *project.IfUseApolloOfflineEnv
 
 	if r.ProductName == "default" {
 		r.ProductName = project.OwnedProduct
@@ -312,7 +312,7 @@ func (r *ReqJenkinsBuild) SetUnityAppName(unityAppId int) {
 		var unityAppName struct {
 			Name string `json:"name"`
 		}
-		db := Model
+		db := DB
 		db = db.Table(Project{}.TableName())
 		db = db.Select("name")
 		db = db.Where("id = ?", unityAppId).First(&unityAppName)

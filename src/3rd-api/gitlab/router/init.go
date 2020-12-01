@@ -10,8 +10,11 @@ import (
 func Init(engine *gin.Engine) *gin.Engine {
 	return r.Init(engine, func(rgs map[r.Api]*gin.RouterGroup) {
 		v1 := rgs[r.ApiV1]
-		v1.GET("/gitlab/projects", handler.ProjectBranchs)
-		v1.GET("/gitlab/commitid", handler.GetCommitID)
+		v1.GET("/gitlab/branchs", handler.GetBranchs)
+		v1.GET("/gitlab/projects", handler.GetBranchs)
+		v1.GET("/gitlab/commit_id", handler.GetCommitID)
+		v1.GET("/gitlab/tags", handler.GetTags)
+		v1.GET("/gitlab/project", handler.ProjectInfo)
 	})
 }
 
