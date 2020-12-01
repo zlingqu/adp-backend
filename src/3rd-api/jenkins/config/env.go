@@ -19,17 +19,17 @@ func GetEnv() *Env {
 	return &env
 }
 
-// 本文件建议在代码协同工具(git/svn等)中忽略
+var jenkinsBaseURL = tools.GetEnvDefault("JENKINS_ADDRESS", "http://jenkins.ops.dm-ai.cn").(string)
 
 var env = Env{
 	Debug:                                   tools.GetEnvDefault("DEBUG_MODEL", true).(bool),
 	ServerPort:                              tools.GetEnvDefault("SERVER_PORT", "80").(string),
-	JenkinsAddress:                          tools.GetEnvDefault("JENKINS_ADDRESS", "http://jenkins.ops.dm-ai.cn").(string),
-	JenkinsJobUpdateAddress:                 tools.GetEnvDefault("JENKINS_JOB_UPDATE_ADDRESS", "http://jenkins.ops.dm-ai.cn/job/").(string),
-	JenkinsMultibranchWebhookTriggerAddress: tools.GetEnvDefault("JENKINS_JOB_ADDRESS", "http://jenkins.ops.dm-ai.cn/multibranch-webhook-trigger/invoke").(string),
+	JenkinsAddress:                          jenkinsBaseURL,
+	JenkinsJobUpdateAddress:                 jenkinsBaseURL + "/job/",
+	JenkinsMultibranchWebhookTriggerAddress: jenkinsBaseURL + "/multibranch-webhook-trigger/invoke",
 	JenkinsUser:                             tools.GetEnvDefault("JENKINS_USER", "admin").(string),
 	JenkinsPasswd:                           tools.GetEnvDefault("JENKINS_PASSWD", "123456").(string),
-	JenkinsPipelineURL:                      tools.GetEnvDefault("JENKINS_PIPELINEURL", "http://jenkins.ops.dm-ai.cn/blue/organizations/jenkins/").(string),
+	JenkinsPipelineURL:                      jenkinsBaseURL + "/blue/organizations/jenkins/",
 }
 
 // var ServiceConf conf
