@@ -103,8 +103,9 @@ var (
 		TemplatePath: "frontend/templates",
 
 		//APP_SECRET: "YbskZqLNT6TEVLUA9HWdnHmZErypNJpL",
-		AppSecret:                          "something-very-secret",
-		MisLdapServiceUrl:                  tools.GetEnvDefault("MIS_LDAP_SERVICE_URL", "http://mis-ldap-service.mis/search").(string),
+		AppSecret:         "something-very-secret",
+		MisLdapServiceUrl: tools.GetEnvDefault("MIS_LDAP_SERVICE_URL", "http://mis-ldap-service.mis/search").(string),
+		// MisLdapServiceUrl:                  tools.GetEnvDefault("MIS_LDAP_SERVICE_URL", "http://192.168.11.21:32366/search").(string),
 		SearchUserAddress:                  tools.GetEnvDefault("SEARCH_USER_ADDRESS", "http://mis-admin-backend.mis.svc.cluster.local/api/open/staff/search").(string),
 		ServiceAdpUserUrl:                  tools.GetEnvDefault("SERVER_ADP_USER_URL", localAddr).(string),
 		JenkinsJobAddress:                  tools.GetEnvDefault("JENKINS_JOB_ADDRESS", localAddr+"/api/v1/jenkins_job").(string),

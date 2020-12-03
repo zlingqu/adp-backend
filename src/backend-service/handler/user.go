@@ -52,8 +52,6 @@ func GetUserChinaName(c *gin.Context) { //修改工单接口，会对用户做�
 
 func SyncLdapUser(c *gin.Context) {
 
-	// if table user is not exists, create.
-	u := m.NewUser()
 	db := m.DB
 
 	misLdapService := m.NewMisLdapService()
@@ -68,14 +66,14 @@ func SyncLdapUser(c *gin.Context) {
 		})
 		return
 	}
-
 	// 然后同步 请求的数据到 mysql指定的数据表中。
 	for _, v := range misLdapService.Rep.Data {
-		db.Where(m.User{
+		user := m.User{
+			OwnerChinaName:   v.DisplayName,
 			OwnerEnglishName: v.Cn,
-		}).Assign(m.User{
-			OwnerChinaName: v.DisplayName,
-		}).FirstOrCreate(u)
+		}
+		db.Where(m.User{OwnerEnglishName: v.Cn}).FirstOrCreate(&user)
+
 	}
 
 	c.JSON(http.StatusOK, gin.H{
