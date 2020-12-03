@@ -1,5 +1,0 @@
-jenkins:
-  url: "http://jenkins.ops.dm-ai.cn"
-  user: "admin"
-  password: "123456"
-  pipelinebaseurl: "http://jenkins.ops.dm-ai.cn/blue/organizations/jenkins/"

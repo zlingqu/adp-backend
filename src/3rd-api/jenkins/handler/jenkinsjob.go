@@ -38,8 +38,8 @@ func NewOperateJenkins(c *gin.Context) {
 	// send to jenkins
 	appName := userJson["app_name"].(string)
 	action := userJson["action"].(string)
-	jenkinsCreateJobUrl := config.ServiceConf.Jenkins.Url + "/createItem?name=" + appName
-	jenkinsDeleteJobUrl := config.ServiceConf.Jenkins.Url + "/job/" + appName + "/doDelete"
+	jenkinsCreateJobUrl := config.GetEnv().JenkinsAddress + "/createItem?name=" + appName
+	jenkinsDeleteJobUrl := config.GetEnv().JenkinsAddress + "/job/" + appName + "/doDelete"
 	jenkinsCfgFile := JenkinsJobCfgFile(appName, userJson["git_address"].(string))
 
 	log.Info("appName: ", appName)
@@ -57,7 +57,7 @@ func NewOperateJenkins(c *gin.Context) {
 		req = glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsDeleteJobUrl).SetRequestProtocol("http").SetContentType("")
 	}
 
-	req.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+	req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 	result, err := req.ExecRequest()
 	if err != nil {
 		log.Error(err)
@@ -78,9 +78,9 @@ func NewOperateJenkins(c *gin.Context) {
 	// index jenkins project
 	if action == "create" {
 		log.Info("re-index project")
-		reIndexUrl := config.ServiceConf.Jenkins.Url + "/job/" + appName + "/build"
+		reIndexUrl := config.GetEnv().JenkinsAddress + "/job/" + appName + "/build"
 		req = glibs.NewHttpRequestCustom([]byte(""), "POST", reIndexUrl).SetRequestProtocol("http").SetContentType("text/xml")
-		req.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+		req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 		ires, ierr := req.ExecRequest()
 
 		if ierr != nil {

@@ -4,14 +4,15 @@ import (
 	"app-deploy-platform/3rd-api/jenkins/config"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-	glibs "github.com/zuoshenglo/go-base-libs"
-	"github.com/zuoshenglo/tools"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	glibs "github.com/zuoshenglo/go-base-libs"
+	"github.com/zuoshenglo/tools"
 )
 
 type JenkinsBuild struct {
@@ -138,12 +139,12 @@ func NewJenkinsBuild(c *gin.Context) {
 
 	log.Info(string(data))
 	//request url
-	jenkinsBaseUrl := config.ServiceConf.Jenkins.Url + "/job/" + userJson["app_name"].(string) + "/job/" + url.QueryEscape(userJson["branch_name"].(string))
+	jenkinsBaseUrl := config.GetEnv().JenkinsAddress + "/job/" + userJson["app_name"].(string) + "/job/" + url.QueryEscape(userJson["branch_name"].(string))
 	log.Info(jenkinsBaseUrl)
 
 	// request jenkins
 	req := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsBaseUrl+"/build").SetRequestProtocol("http").SetContentType("application/x-www-form-urlencoded").SetFormKeyValues("json", string(data))
-	req.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+	req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 	result, err := req.ExecRequest()
 	if err != nil {
 		log.Error(err)
@@ -164,7 +165,7 @@ func NewJenkinsBuild(c *gin.Context) {
 		//log.Info(string(data))
 		updateString := "{\"parameter\":[{\"name\":\"GIT_VERSION\",\"value\":\"update\"}]}"
 		req := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsBaseUrl+"/build").SetRequestProtocol("http").SetContentType("application/x-www-form-urlencoded").SetFormKeyValues("json", updateString)
-		req.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+		req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 		result, err := req.ExecRequest()
 		if err != nil {
 			log.Error(err)
@@ -185,7 +186,7 @@ func NewJenkinsBuild(c *gin.Context) {
 		time.Sleep(30 * time.Second)
 
 		req = glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsBaseUrl+"/build").SetRequestProtocol("http").SetContentType("application/x-www-form-urlencoded").SetFormKeyValues("json", string(data))
-		req.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+		req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 		result, err = req.ExecRequest()
 
 		if err != nil {
@@ -208,9 +209,9 @@ func NewJenkinsBuild(c *gin.Context) {
 	log.Info("begin get last build")
 	jenkinsdLastBuildApiUrl := jenkinsBaseUrl + "/lastBuild/api/json"
 	log.Info(jenkinsdLastBuildApiUrl)
-	log.Info(config.ServiceConf.Jenkins.User)
+	log.Info(config.GetEnv().JenkinsUser)
 	reqLast := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsdLastBuildApiUrl).SetRequestProtocol("http").SetContentType("")
-	reqLast.SetBasicAuth(config.ServiceConf.Jenkins.User, config.ServiceConf.Jenkins.Password)
+	reqLast.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 	resultLast, errLast := reqLast.ExecRequest()
 	if errLast != nil {
 		log.Error(errLast)
@@ -231,7 +232,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	buildId := fmt.Sprintf("%d", buildIdInt+1)
 	returnDate["status"] = "ok"
 	returnDate["info"] = "build success"
-	returnDate["url"] = config.ServiceConf.Jenkins.Pipelinebaseurl + userJson["app_name"].(string) + "/detail/" + url.QueryEscape(userJson["branch_name"].(string)) + "/" + buildId + "/pipeline"
+	returnDate["url"] = config.GetEnv().JenkinsPipelineURL + userJson["app_name"].(string) + "/detail/" + url.QueryEscape(userJson["branch_name"].(string)) + "/" + buildId + "/pipeline"
 
 	log.Info(returnDate)
 	c.JSON(http.StatusOK, returnDate)
