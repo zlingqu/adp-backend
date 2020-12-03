@@ -79,7 +79,7 @@ func ProjectInfo(c *gin.Context) {
 	gitHttpUrl = svc.GitlabUrlCheck(gitHttpUrl) //url格式检查和转换
 	id := svc.GetIDByRepourl(gitHttpUrl)
 	if id == -1 {
-		c.JSON(http.StatusNotFound, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"code": 404,
 			"res":  "error",
 			"msg":  "找不到这样的repo,请检查",
