@@ -83,7 +83,7 @@ type Project struct {
 	MemoryMinRequire          int       `json:"memory_min_require"`
 	MemoryMaxRequire          int       `json:"memory_max_require"`
 	IfStorageLocale           *bool     `json:"if_storage_locale" gorm:"default:0"`
-	StoragePath               string    `json:"storage_path" gorm:"type:varchar(80)"`
+	StoragePath               string    `json:"storage_path" gorm:"type:varchar(512)"`
 	IfUseGpuCard              *bool     `json:"if_use_gpu_card" gorm:"default:0"`
 	GpuControlMode            string    `json:"gpu_control_mode" gorm:"type:varchar(80)"`
 	GpuCardCount              int       `json:"gpu_card_count"`
