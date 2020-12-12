@@ -11,8 +11,9 @@ class ADPAPITestCase(unittest.TestCase):
         print(resp.text)
 
     def test_post_result(self):
-        resp = requests.post(addr + "result", json={"name": "cp-wechat", "deploy_env": "dev", "version": "last"})
-        print(resp.text)
+        for i in range(10):
+            resp = requests.post(addr + "result", json={"name": "cp-wechat", "deploy_env": "dev", "version": "last"})
+            print(resp.text)
 
 
 if __name__ == '__main__':

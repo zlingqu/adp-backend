@@ -3,25 +3,36 @@ package server
 import (
 	"app-deploy-platform/backend-service/model"
 	"app-deploy-platform/backend-service/service"
-	"encoding/json"
+	"container/list"
 	"fmt"
 	"gopkg.in/antage/eventsource.v1"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
 var (
-	channelSize = 10
-	cache       chan model.Result
+	cache      = list.New()
+	cacheMutex sync.Mutex
 )
 
-func init() {
-	cache = make(chan model.Result, channelSize)
+func PushResult(result model.Result) {
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+	cache.PushBack(result)
 }
 
-func PushResult(result model.Result) {
-	cache <- result
+func getAllResult() (results []model.Result) {
+	cacheMutex.Lock()
+	defer cacheMutex.Unlock()
+
+	var next *list.Element
+	for e := cache.Front(); e != nil; e = next {
+		next = e.Next()
+		results = append(results, cache.Remove(e).(model.Result))
+	}
+	return
 }
 
 func RunEventSource(port string) {
@@ -39,23 +50,27 @@ func RunEventSource(port string) {
 	defer es.Close()
 
 	http.Handle("/events", es)
-
 	go func() {
-		sleepTime := 2 * time.Second
-		for res := range cache {
-			deploy := service.GetDeployByResult(res)
+		timer := time.NewTicker(time.Second * 10)
+		for {
+			select {
+			case <-timer.C:
+				consumersCount := es.ConsumersCount()
+				if consumersCount > 0 {
+					jenkinsBuildTokens := ""
+					for _, t := range service.GetDeployByResult(getAllResult()...) {
+						jenkinsBuildTokens += t.JenkinsBuildToken + ","
+					}
 
-			if deploy.ID == 0 {
-				log.Printf("错误：%v\n", deploy)
-				time.Sleep(sleepTime)
-				continue
+					if jenkinsBuildTokens != "" {
+						es.SendEventMessage(jenkinsBuildTokens, "", "")
+						log.Printf("Hello has been sent (consumers: %d)", consumersCount)
+					}
+				}
+
 			}
-
-			r, _ := json.Marshal(deploy)
-			es.SendEventMessage(string(r), "", "")
-			log.Printf("Hello has been sent (consumers: %d)", es.ConsumersCount())
-			time.Sleep(sleepTime)
 		}
 	}()
+
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

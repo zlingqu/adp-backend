@@ -16,10 +16,10 @@ func init() {
 	cacheEnv()
 
 	go func() {
-		timer := time.NewTicker(time.Minute)
+		ticker := time.NewTicker(time.Minute)
 		for {
 			select {
-			case <-timer.C:
+			case <-ticker.C:
 				cacheEnv()
 			}
 		}
