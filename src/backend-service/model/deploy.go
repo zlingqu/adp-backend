@@ -289,8 +289,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 
 func (r *ReqJenkinsBuild) SetReplics(envName string, podsNumString string) *ReqJenkinsBuild {
 	podsNumList := strings.Split(podsNumString, ",")
-	log.Info("ttttttttt : " + podsNumString)
-	if len(podsNumList) <= 2 {
+	if len(podsNumList) <= 1 {
 		r.Replics = 1
 		return r
 	}
