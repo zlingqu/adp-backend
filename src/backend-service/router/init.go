@@ -18,9 +18,8 @@ func Init(engine *gin.Engine) *gin.Engine {
 		spaceRoute(v1, v2)
 		userRoute(v1, v2)
 
-		v1.GET("/result", GetResult)
-		v1.POST("/result", PostResult)
-		v1.POST("/result-form", PostFormResult)
+		v1.POST("/result", r.WrapHandlerFunc(PostResult))
+		v1.POST("/result-form", r.WrapHandlerFunc(PostFormResult))
 	})
 
 }
