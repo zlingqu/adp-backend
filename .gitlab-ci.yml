@@ -27,6 +27,7 @@ job_build:
       - src/build/
   only:
     - quzl
+    - ll
   tags:
     - k8s-runner
     
@@ -42,6 +43,7 @@ job_make_and_push_image:
     - echo "docker image is:" && echo $IMAGE_TAG_NAME
   only:
     - quzl
+    - ll
   tags:
     - k8s-runner
   
@@ -55,6 +57,7 @@ job_k8s_dev_deploy:
     - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
     - quzl
+    - ll
   tags:
     - k8s-runner
 
@@ -68,6 +71,7 @@ job_k8s_prd_deploy:
     - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
     - quzl
+    - ll
   tags:
     - k8s-runner
   when: manual
