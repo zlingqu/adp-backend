@@ -2,7 +2,6 @@ package handler
 
 import (
 	m "app-deploy-platform/backend-service/model"
-	"app-deploy-platform/backend-service/server"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
@@ -28,7 +27,6 @@ func PostResult(c *gin.Context) (int, interface{}, string) {
 	}
 
 	m.DB.Create(result)
-	server.PushResult(*result)
 
 	return 0, "ok", "ok"
 }

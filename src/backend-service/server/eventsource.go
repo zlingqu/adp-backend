@@ -1,39 +1,18 @@
 package server
 
 import (
-	"app-deploy-platform/backend-service/model"
 	"app-deploy-platform/backend-service/service"
-	"container/list"
 	"fmt"
 	"gopkg.in/antage/eventsource.v1"
 	"log"
 	"net/http"
-	"sync"
 	"time"
 )
 
 var (
-	cache      = list.New()
-	cacheMutex sync.Mutex
+	scheduleTime                 = time.Second * 5
+	lastSearchResultTimeInterval = time.Second * 60
 )
-
-func PushResult(result model.Result) {
-	cacheMutex.Lock()
-	defer cacheMutex.Unlock()
-	cache.PushBack(result)
-}
-
-func getAllResult() (results []model.Result) {
-	cacheMutex.Lock()
-	defer cacheMutex.Unlock()
-
-	var next *list.Element
-	for e := cache.Front(); e != nil; e = next {
-		next = e.Next()
-		results = append(results, cache.Remove(e).(model.Result))
-	}
-	return
-}
 
 func RunEventSource(port string) {
 	fmt.Println("event source port:", port)
@@ -51,14 +30,16 @@ func RunEventSource(port string) {
 
 	http.Handle("/events", es)
 	go func() {
-		timer := time.NewTicker(time.Second * 10)
+		timer := time.NewTicker(scheduleTime)
 		for {
 			select {
-			case <-timer.C:
+			case t := <-timer.C:
 				consumersCount := es.ConsumersCount()
 				if consumersCount > 0 {
 					jenkinsBuildTokens := ""
-					for _, t := range service.GetDeployByResult(getAllResult()...) {
+
+					results := service.GetResultByCreateTime(t.Add(-lastSearchResultTimeInterval))
+					for _, t := range service.GetDeployByResult(results...) {
 						jenkinsBuildTokens += t.JenkinsBuildToken + ","
 					}
 
