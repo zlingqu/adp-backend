@@ -26,6 +26,7 @@ job_build:
     paths:
       - src/build/
   only:
+    - dev
     - quzl
     - ll
   tags:
