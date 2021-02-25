@@ -42,6 +42,7 @@ job_make_and_push_image:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/service-run.Dockerfile --destination $IMAGE_TAG_NAME #使用kaniko代替dind/sokcet模式，打镜像和上传
     - echo "docker image is:" && echo $IMAGE_TAG_NAME
   only:
+    - dev
     - quzl
     - ll
   tags:
@@ -56,6 +57,7 @@ job_k8s_dev_deploy:
     - echo $K8S_DEV_TOKEN|base64 -d > .kube/config
     - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
+    - dev
     - quzl
     - ll
   tags:
@@ -70,6 +72,7 @@ job_k8s_prd_deploy:
     - echo $K8S_PRD_TOKEN|base64 -d > .kube/config
     - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
+    - dev
     - quzl
     - ll
   tags:
