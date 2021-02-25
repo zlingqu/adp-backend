@@ -22,6 +22,7 @@ type UpdateDeploy struct {
 	OwnerChinaName     string `json:"owner_china_name" gorm:"type:varchar(80)"`
 	Status             string `json:"status" gorm:"type:varchar(20)"`
 	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80)"`
+	PodNums            int  `json:"pod_nums" gorm:"default:1"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80)"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80)"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80)"`
@@ -267,7 +268,8 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ModelBranch = d.ModelBranch
 	r.DeployEnv = env.Name
 	r.DeployEnvStatus = env.Status
-	r.Replics = project.CopyCount
+	// r.Replics = project.CopyCount
+	r.Replics = d.PodNums
 	r.ContainerPort = project.ContainerPort
 	r.ServiceListenPort = project.ServiceListenPort
 	r.CpuRequest = strconv.Itoa(project.CpuMinRequire) + "m"
