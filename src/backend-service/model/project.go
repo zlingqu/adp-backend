@@ -71,7 +71,6 @@ type Project struct {
 	IfUseAutoDeployFile       *bool     `json:"if_use_auto_deploy_file" gorm:"default:0"`
 	AutoDeployContent         string    `json:"auto_deploy_content" gorm:"type:text"`
 	IfDeploy                  *bool     `json:"if_deploy" gorm:"default:0"`
-	PodsNum                   string    `json:"pods_num"`
 	ContainerPort             int       `json:"container_port"`
 	ServiceListenPort         string    `json:"service_listen_port" gorm:"type:varchar(80)"`
 	IfUseCustomDockerfile     *bool     `json:"if_use_custom_dockerfile" gorm:"default:0"`

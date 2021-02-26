@@ -288,25 +288,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	return r
 }
 
-// SetReplics这个方法没有用了
-func (r *ReqJenkinsBuild) SetReplics(envName string, podsNumString string) *ReqJenkinsBuild {
-	podsNumList := strings.Split(podsNumString, ",")
-	if len(podsNumList) <= 1 {
-		r.Replics = 1
-		return r
-	}
-
-	for _, val := range podsNumList {
-		log.Info(val)
-		tmpList := strings.Split(val, ":")
-		log.Info(tmpList, envName)
-		if len(tmpList) > 1 && envName == tmpList[0] {
-			r.Replics = tools.StringToInt(tmpList[1])
-		}
-	}
-	return r
-}
-
 func (r *ReqJenkinsBuild) SetUnityAppName(unityAppId int) {
 	r.UnityAppName = "no_unity"
 	if r.CodeLanguage == "android" && r.IfAddUnityProject {
