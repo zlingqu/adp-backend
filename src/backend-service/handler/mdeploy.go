@@ -106,36 +106,3 @@ func CallJenkinsApiByID(envID, id uint, tag string) string {
 	fmt.Println(msg)
 	return "error"
 }
-
-// func ReqServiceOperateJenkinsBuild(env m.GetEnvById, project m.GetProjectById, d *m.Deploy) (res string, msg string, url string, lb string) {
-// 	re, ms, url, lb := "ok", "ok", "", ""
-// 	var reqJenkinsBuild m.ReqJenkinsBuild
-// 	reqJenkinsBuild.SetReqJenkinsBuildData(env.Data, project.Data, *d).SetReplics(env.Data.Name, project.Data.PodsNum).SetUnityAppName(project.Data.UnityAppId)
-// 	byte, _ := json.Marshal(reqJenkinsBuild)
-// 	client := resty.New()
-// 	r, e := client.R().SetHeader("Accept", "application/json").
-// 		SetBody(string(byte)).Post(config.GetEnv().JenkinsBuildAddress)
-// 	if e != nil {
-// 		log.Error(e)
-// 		return "fail", "fail", url, lb
-// 	}
-
-// 	if r.StatusCode() != 200 {
-// 		return "fail", "Request Jenkins to build, status code is not 200", url, lb
-// 	}
-
-// 	var jenkinsBuildResponse m.JenkinsBuildResponse
-// 	e = json.Unmarshal(r.Body(), &jenkinsBuildResponse)
-// 	if e != nil {
-// 		log.Error(e)
-// 		return "fail", "json unmarshal fail", url, lb
-// 	}
-
-// 	if jenkinsBuildResponse.Status == "faild" {
-// 		return "fail", jenkinsBuildResponse.Info, url, lb
-// 	} else {
-// 		url = jenkinsBuildResponse.Url
-// 		lb = string(r.Body())
-// 		return re, ms, url, lb
-// 	}
-// }

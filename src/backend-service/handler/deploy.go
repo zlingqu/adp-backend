@@ -137,7 +137,6 @@ func ReqServiceCallJenkinsTrigger(p m.GetProjectById) (res string, msg string) {
 func ReqServiceOperateJenkinsBuild(env m.GetEnvById, project m.GetProjectById, d *m.Deploy) (res string, msg string, url string, lb string) {
 	re, ms, url, lb := "ok", "ok", "", ""
 	var reqJenkinsBuild m.ReqJenkinsBuild
-	//reqJenkinsBuild.SetReqJenkinsBuildData(env.Data, project.Data, *d).SetReplics(env.Data.Name, project.Data.PodsNum).SetUnityAppName(project.Data.UnityAppId)
 	reqJenkinsBuild.SetReqJenkinsBuildData(env.Data, project.Data, *d).SetUnityAppName(project.Data.UnityAppId)
 	byte, _ := json.Marshal(reqJenkinsBuild)
 	client := resty.New()
