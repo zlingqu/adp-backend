@@ -72,7 +72,7 @@ var (
 				User:                 tools.GetEnvDefault("DB_USER", "quzl").(string),
 				Passwd:               tools.GetEnvDefault("DB_PASSWD", "quzl").(string),
 				DBName:               tools.GetEnvDefault("DB_NAME", "dev_adp").(string),
-				Addr:                 "192.168.3.151:3306",
+				Addr:                 tools.GetEnvDefault("DB_HOST", "192.168.3.151:3306").(string),
 				Collation:            "utf8mb4_unicode_ci",
 				Net:                  "tcp",
 				AllowNativePasswords: true,
