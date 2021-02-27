@@ -38,7 +38,7 @@ func GetProjectV2IdNameGitLangProduct(c *gin.Context) {
 
 	// select db
 	db = db.Table(m.Project{}.TableName())
-	db = db.Select("id, name, git_repository, language_type, owned_product, if_use_model, if_use_git_manager_model, model_git_repository")
+	db = db.Select("id, name, git_repository, language_type, owned_product, if_deploy, if_use_model, if_use_git_manager_model, model_git_repository")
 	db = db.Where("name like ?", "%"+projectName+"%")
 	db.Scan(&repData)
 

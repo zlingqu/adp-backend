@@ -21,6 +21,8 @@ type UpdateDeploy struct {
 	Status             string `json:"status" gorm:"type:varchar(20)"`
 	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80)"`
 	PodNums            int    `json:"pod_nums" gorm:"default:1"`
+	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0"`
+	StoragePath        string `json:"storage_path" gorm:"type:varchar(512)"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80)"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80)"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80)"`
@@ -273,8 +275,10 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.CpuLimit = strconv.Itoa(project.CpuMaxRequire) + "m"
 	r.MemoryRequest = strconv.Itoa(project.MemoryMinRequire) + "Mi"
 	r.MemoryLimit = strconv.Itoa(project.MemoryMaxRequire) + "Mi"
-	r.IfStorageLocale = *project.IfStorageLocale
-	r.StoragePath = project.StoragePath
+	//r.IfStorageLocale = *project.IfStorageLocale
+	//r.StoragePath = project.StoragePath
+	r.IfStorageLocale = *d.IfStorageLocale
+	r.StoragePath = d.StoragePath
 	r.IfCheckPodsStatus = *project.IfCheckPodsStatus
 	r.IfUseIstio = *project.IfUseIstio
 	r.IfUseApolloOfflineEnv = *project.IfUseApolloOfflineEnv

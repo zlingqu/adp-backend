@@ -29,6 +29,7 @@ type ProjectIdNameGitLangProduct struct {
 	GitRepository        string `json:"git_repository" gorm:"type:varchar(300)"`
 	LanguageType         string `json:"language_type" gorm:"type:varchar(80)"`
 	OwnedProduct         string `json:"owned_product" gorm:"type:varchar(80)"`
+	IfDeploy		     bool   `json:"if_deploy"`
 	IfUseModel           bool   `json:"if_use_model"`
 	IfUseGitManagerModel bool   `json:"if_use_git_manager_model"`
 	ModelGitRepository   string `json:"model_git_repository"  gorm:"type:varchar(300)"`
