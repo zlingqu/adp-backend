@@ -29,7 +29,7 @@ type ProjectIdNameGitLangProduct struct {
 	GitRepository        string `json:"git_repository" gorm:"type:varchar(300)"`
 	LanguageType         string `json:"language_type" gorm:"type:varchar(80)"`
 	OwnedProduct         string `json:"owned_product" gorm:"type:varchar(80)"`
-	IfDeploy		     bool   `json:"if_deploy"`
+	IfDeploy             bool   `json:"if_deploy"`
 	IfUseModel           bool   `json:"if_use_model"`
 	IfUseGitManagerModel bool   `json:"if_use_git_manager_model"`
 	ModelGitRepository   string `json:"model_git_repository"  gorm:"type:varchar(300)"`
@@ -81,8 +81,6 @@ type Project struct {
 	CpuMaxRequire             int       `json:"cpu_max_require"`
 	MemoryMinRequire          int       `json:"memory_min_require"`
 	MemoryMaxRequire          int       `json:"memory_max_require"`
-	IfStorageLocale           *bool     `json:"if_storage_locale" gorm:"default:0"`
-	StoragePath               string    `json:"storage_path" gorm:"type:varchar(512)"`
 	IfUseGpuCard              *bool     `json:"if_use_gpu_card" gorm:"default:0"`
 	GpuControlMode            string    `json:"gpu_control_mode" gorm:"type:varchar(80)"`
 	GpuCardCount              int       `json:"gpu_card_count"`
