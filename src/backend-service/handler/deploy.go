@@ -270,7 +270,7 @@ func PostUpdate(c *gin.Context) {
 		})
 		return
 	} else {
-		up.OwnerChinaName = userInfo
+		d.OwnerChinaName = userInfo
 	}
 
 	// m.DB.Model(d.TableName()).Updates(&up)
