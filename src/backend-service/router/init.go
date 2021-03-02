@@ -17,6 +17,7 @@ func Init(engine *gin.Engine) *gin.Engine {
 		projectRoute(v1, v2)
 		spaceRoute(v1, v2)
 		userRoute(v1, v2)
+		tools(v1, v2)
 
 		v1.POST("/result", r.WrapHandlerFunc(PostResult))
 		v1.POST("/result-form", r.WrapHandlerFunc(PostFormResult))
@@ -77,3 +78,9 @@ func userRoute(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
 	v1.GET("/get-user-for-name", GetUserForName)
 	v1.GET("/user/get-owner-china-name", GetUserChinaName)
 }
+
+func tools(v1 *gin.RouterGroup, v2 *gin.RouterGroup) {
+	v1.GET("/tools/qrcode",GetQrcode)
+
+}
+
