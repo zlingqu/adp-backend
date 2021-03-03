@@ -126,8 +126,8 @@ func GetProjectV2(c *gin.Context) {
 	log.Println(ownedProduct, deployEnvType, languageType)
 	log.Println(len(ownedProduct), len(deployEnvType), len(languageType))
 
-	db.Limit(limit).Offset(offset).Find(&project)
-	db.Model(&m.Project{}).Count(&count)
+	db.Find(&project).Count(&count).Limit(limit).Offset(offset)
+	//db.Model(&m.Project{}).Count(&count)
 	//m.Model.Limit(limit).Offset(offset).Where("name LIKE ?", "%" + name + "%").Find(&project)
 	//m.Model.Model(&m.Project{}).Where("name LIKE ?", "%" + name + "%").Count(&count)
 
