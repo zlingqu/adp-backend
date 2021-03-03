@@ -365,8 +365,8 @@ func GetDeploy(c *gin.Context) {
 	if name != "" {
 		db = db.Where("d.name like ? or owner_english_name like ? or d.owner_china_name like ? or p.name like ? ", "%"+name+"%","%"+name+"%","%"+name+"%","%"+name+"%")
 	}
-	db = db.Limit(limit).Offset(offset)
-	db.Scan(&respDeploy).Count(&count)
+
+	db.Scan(&respDeploy).Count(&count).Limit(limit).Offset(offset)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
