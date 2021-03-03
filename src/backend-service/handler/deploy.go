@@ -328,138 +328,52 @@ func PostDeploy(c *gin.Context) {
 
 func GetDeploy(c *gin.Context) {
 
-	// init req param
-	name := strings.TrimSpace(c.DefaultQuery("name", ""))
+
+	name := strings.TrimSpace(c.DefaultQuery("name", "")) //模糊搜索用的
 	rDeployNamespace := strings.TrimSpace(c.DefaultQuery("deploy_namespace", ""))
 	rOwnerName := strings.TrimSpace(c.DefaultQuery("owner_name", ""))
-	rAppId := strings.TrimSpace(c.DefaultQuery("app", ""))
+	rAppName := strings.TrimSpace(c.DefaultQuery("app_name", ""))
+	rEnvName := strings.TrimSpace(c.DefaultQuery("env_name", ""))
 	limit, offset := tools.GetMysqlLimitOffset(c.DefaultQuery("page", "1"), c.DefaultQuery("size", "10"))
 
-	var deploy []m.ReqDeploy
-	appIdList := make([]int, 0)
-	ownerEnglishNameList := make([]string, 0)
-	ownerChineseNameList := make([]string, 0)
+
+	type RespDeploy struct {
+		m.ReqDeploy
+		EnvName       string `json:"env_name" gorm:"env_name"`
+		AppName       string `json:"app_name" gorm:"app_name"`
+		GitRepository string `json:"git_repository" gorm:"git_repository"`
+		LanguageType  string `json:"language_type" gorm:"language_type"`
+	}
+
+	var respDeploy []RespDeploy
 	var count int64
 	db := m.DB
-	if rDeployNamespace != "" {
-		db = db.Where("k8s_namespace in (?)", strings.Split(rDeployNamespace, ","))
-	}
+	db = db.Table("deploy as d").Select("d.*,p.name as app_name,e.name as env_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id").Joins("join env as e on d.env_id=e.id")
 
 	if rOwnerName != "" {
-		db = db.Where("owner_china_name in (?)", strings.Split(rOwnerName, ","))
+		db = db.Where("d.owner_china_name in (?)", strings.Split(rOwnerName, ","))
 	}
-
-	if rAppId != "" {
-		db = db.Where("app_id in (?)", strings.Split(rAppId, ","))
+	if rAppName != "" {
+		db = db.Where("p.name in (?)", strings.Split(rAppName, ","))
 	}
-
-	//name := c.DefaultQuery("name", "")
-	log.Info(fmt.Sprintf("req parms: name: %s, limit: %d, offset: %d", name, limit, offset))
-
-	log.Info("开始请求service-adp-env的数据。")
-	reqEnvData, e := getEnv()
-	if e != nil {
-		log.Error(e)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": 0,
-			"msg":  e,
-			"res":  "fail",
-		})
-		return
+	if rDeployNamespace != "" {
+		db = db.Where("d.k8s_namespace in (?)", strings.Split(rDeployNamespace, ","))
 	}
-	log.Info("请求service-adp-env的数据完成。")
-
-	log.Info("开始请求service-adp-project的数据。")
-	reqProjectData, e := getProjectByName(name)
-	if e != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": 0,
-			"msg":  e,
-			"res":  "fail",
-		})
-		return
+	if rEnvName != "" {
+		db = db.Where("e.name in (?)", strings.Split(rEnvName, ","))
 	}
-	log.Info("请求service-adp-project的数据完成。")
-
-	var reqProjectAllData map[int]string
 	if name != "" {
-		reqProjectAllData, e = getProjectByName("")
-		if e != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": 0,
-				"msg":  e,
-				"res":  "fail",
-			})
-			return
-		}
-	} else {
-		reqProjectAllData = reqProjectData
+		db = db.Where("d.name like ? or owner_english_name like ? or d.owner_china_name like ? or p.name like ? ", "%"+name+"%","%"+name+"%","%"+name+"%","%"+name+"%")
 	}
-
-	log.Info("Request service service-adp-project all data succeeded")
-
-	for k, _ := range reqProjectData {
-		//appNameList = append(appNameList, v)
-		appIdList = append(appIdList, k)
-	}
-
-	if name != "" {
-		log.Info("开始请求service-adp-user的数据。")
-		requestUserInfo, e := getUserInfoV2(name)
-		log.Info("请求service-adp-user的数据完成。")
-		if e != nil {
-			log.Error(e)
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code": 0,
-				"msg":  e,
-				"res":  "fail",
-			})
-			return
-		}
-		log.Info("Request "+config.GetEnv().SearchUserAddress+" succeeded", requestUserInfo)
-		for k, v := range requestUserInfo {
-			ownerEnglishNameList = append(ownerEnglishNameList, k)
-			ownerChineseNameList = append(ownerChineseNameList, v)
-		}
-
-		db = db.Where("name like ? OR app_id in (?) OR owner_english_name in (?) OR owner_china_name in (?)",
-			"%"+name+"%", appIdList, ownerEnglishNameList, ownerChineseNameList)
-
-		//db.Where("name like ?", "%" + name + "%").
-		//	Or("app_id in (?)", appIdList).
-		//	Or("owner_english_name in (?)", ownerEnglishNameList).
-		//	Or("owner_china_name in (?)", ownerChineseNameList)
-	}
-
-	log.Info("Start querying table deploy")
-	log.Info("开始查询数据库的数据。")
-	db.Limit(limit).Offset(offset).Find(&deploy)
-	log.Info("开始查询数据库的统计数据。")
-	db.Model(&m.ReqDeploy{}).Count(&count)
-
-	//log.Println(reqProjectData)
-	// add appName, envName, ownerName
-	for k, v := range deploy {
-		//deploy[k].AppName = strings.Split(reqProjectAllData[int(v.AppId)], "::::::")[0]
-		tmpProjectInfolist := strings.Split(reqProjectAllData[int(v.AppId)], "::::::")
-		if len(tmpProjectInfolist) == 6 {
-			deploy[k].AppName = tmpProjectInfolist[0]
-			deploy[k].GitRepository = tmpProjectInfolist[1]
-			deploy[k].LanguageType = tmpProjectInfolist[2]
-			deploy[k].IfUseModel = tools.StringToBool(tmpProjectInfolist[3])
-			deploy[k].IfUseGitManagerModel = tools.StringToBool(tmpProjectInfolist[4])
-			deploy[k].ModelGitRepository = tmpProjectInfolist[5]
-			deploy[k].EnvName = reqEnvData[int(v.EnvId)]
-		}
-		//deploy[k].OwnerChinaName = requestUserInfo[v.Owner]
-	}
+	db = db.Limit(limit).Offset(offset)
+	db.Scan(&respDeploy).Count(&count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
 		"msg":   "ok",
 		"res":   "ok",
 		"count": count,
-		"data":  deploy,
+		"data":  respDeploy,
 	})
 }
 
