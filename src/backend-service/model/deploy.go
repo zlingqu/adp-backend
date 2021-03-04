@@ -23,6 +23,9 @@ type UpdateDeploy struct {
 	PodNums            int    `json:"pod_nums" gorm:"default:1"`
 	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0"`
 	StoragePath        string `json:"storage_path" gorm:"type:varchar(512)"`
+	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80)"`
+	GpuCardCount       int    `json:"gpu_card_count"`
+	GpuMemCount        int    `json:"gpu_mem_count"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80)"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80)"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80)"`
@@ -254,9 +257,9 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ServeType = project.ServeType
 	r.ReplicationControllerType = project.ReplicationControllerType
 	r.IfUseGpuCard = *project.IfUseGpuCard
-	r.GpuControlMode = project.GpuControlMode
-	r.GpuCardCount = project.GpuCardCount
-	r.GpuMemCount = project.GpuMemCount
+	r.GpuControlMode = d.GpuControlMode
+	r.GpuCardCount = d.GpuCardCount
+	r.GpuMemCount = d.GpuMemCount
 	r.BranchName = d.Branch
 	r.Version = d.Version
 	r.VersionControlMode = d.VersionControlMode
