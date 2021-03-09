@@ -5,11 +5,13 @@ import (
 )
 
 type Env struct {
-	ID        uint      `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Name      string    `json:"name"`
-	Status    string    `json:"status"`
+	ID             uint      `gorm:"primary_key" json:"id"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	Name           string    `json:"name"`
+	Status         string    `json:"status"`
+	GpuTypeByCourt string    `json:"gpu_type_by_court" gorm:"type:varchar(512)"`
+	GpuTypeByMem   string    `json:"gpu_type_by_mem" gorm:"type:varchar(512)"`
 }
 
 func (Env) TableName() string {

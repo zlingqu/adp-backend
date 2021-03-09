@@ -100,14 +100,15 @@ func PostEnvs(c *gin.Context) {
 
 func PutEnv(c *gin.Context) {
 	env := m.NewEnv()
-	if err := c.ShouldBind(env); err != nil {
+	if err := c.ShouldBind(&env); err != nil {
 		log.Error(err)
 	}
 
 	log.Println(*env)
 
 	// m.DB.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
-	m.DB.Updates(&env) //这种写法，需要写出mysql的所有列
+	// m.DB.Debug().Updates(&env) 
+	m.DB.Model(env).Select("name", "status", "gpu_type_by_court", "gpu_type_by_mem").Debug().Updates(*env)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
