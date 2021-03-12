@@ -91,6 +91,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("GPU_CONTROL_MODE", userJson["gpu_control_mode"].(string))
 	j.addParameter("GPU_CARD_COUNT", userJson["gpu_card_count"].(float64))
 	j.addParameter("GPU_MEM_COUNT", userJson["gpu_mem_count"].(float64))
+	j.addParameter("GPU_TYPE", userJson["gpu_type"].(string))
 	j.addParameter("GIT_VERSION", userJson["git_commit_id"])
 	j.addParameter("GIT_TAG", userJson["git_tag"])
 	j.addParameter("APOLLO_CLUSTER_NAME", userJson["apollo_cluster_name"])

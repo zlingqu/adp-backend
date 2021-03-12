@@ -106,9 +106,9 @@ func PutEnv(c *gin.Context) {
 
 	log.Println(*env)
 
-	// m.DB.Model(env).Updates(map[string]interface{}{"name": env.Name, "status": env.Status})
-	// m.DB.Debug().Updates(&env) 
-	m.DB.Model(env).Select("name", "status", "gpu_type_by_court", "gpu_type_by_mem").Debug().Updates(*env)
+	// m.DB.Debug().Updates(&env)
+	m.DB.Updates(&env)
+	// m.DB.Model(env).Select("name", "status", "gpu_type_by_court", "gpu_type_by_mem").Debug().Updates(*env)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
