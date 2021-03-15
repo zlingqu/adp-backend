@@ -258,7 +258,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.DockerfileContent = project.DockerfileContent
 	r.ServeType = project.ServeType
 	r.ReplicationControllerType = project.ReplicationControllerType
-	r.IfUseGpuCard = *project.IfUseGpuCard
 	r.GpuControlMode = d.GpuControlMode
 	r.GpuCardCount = d.GpuCardCount
 	r.GpuMemCount = d.GpuMemCount

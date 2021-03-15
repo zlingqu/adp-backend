@@ -82,10 +82,6 @@ type Project struct {
 	CpuMaxRequire             int       `json:"cpu_max_require"`
 	MemoryMinRequire          int       `json:"memory_min_require"`
 	MemoryMaxRequire          int       `json:"memory_max_require"`
-	IfUseGpuCard              *bool     `json:"if_use_gpu_card" gorm:"default:0"`
-	GpuControlMode            string    `json:"gpu_control_mode" gorm:"type:varchar(80)"`
-	GpuCardCount              int       `json:"gpu_card_count"`
-	GpuMemCount               int       `json:"gpu_mem_count"`
 	IfUseIstio                *bool     `json:"if_use_istio" gorm:"default:0"`
 	IfUseApolloOfflineEnv     *bool     `json:"if_use_apollo_offline_env" gorm:"default:0"`
 	IfNeedCheck               *bool     `json:"if_need_check" gorm:"default:0"`
