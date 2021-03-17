@@ -123,7 +123,6 @@ func NewJenkinsBuild(c *gin.Context) {
 		tools.BoolToString(userJson["if_use_git_manager_model"].(bool))+":::"+
 		tools.BoolToString(userJson["if_save_model_build_computer"].(bool))+":::"+
 		userJson["model_git_repository"].(string)+":::"+
-		userJson["model_branch"].(string)+":::"+
 		userJson["deploy_env_status"].(string)+":::"+
 		userJson["deploy_env"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_istio"].(bool))+":::"+
