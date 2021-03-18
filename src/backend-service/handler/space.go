@@ -20,7 +20,7 @@ func GetSpace(c *gin.Context) {
 	}
 
 	m.DB.Where("name LIKE ?", "%"+param.Name+"%").Find(&space).Count(&count)
-	log.Info("GetSpace查出条数", count)
+	//log.Info("GetSpace查出条数", count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,

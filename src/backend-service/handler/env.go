@@ -20,8 +20,8 @@ func GetEnv(c *gin.Context) {
 	}
 
 	m.DB.Where("name LIKE ?", "%"+getEnv.Name+"%").Find(&env).Count(&count)
-	log.Println(env)
-	log.Println(count)
+	//log.Println(env)
+	//log.Println(count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,

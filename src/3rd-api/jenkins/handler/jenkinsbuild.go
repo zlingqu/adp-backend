@@ -87,7 +87,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("CUSTOM_DOCKERFILE", userJson["if_use_custom_dockerfile"].(bool))
 	j.addParameter("CUSTOM_DOCKERFILE_CONTENT", userJson["dockerfile_content"].(string))
 	j.addParameter("SERVICE_TYPE", userJson["serve_type"].(string))
-	//j.addParameter("ENV_TYPE", j.getGpuType(userJson["if_use_gpu_card"].(bool)))
 	j.addParameter("GPU_CONTROL_MODE", userJson["gpu_control_mode"].(string))
 	j.addParameter("GPU_CARD_COUNT", userJson["gpu_card_count"].(float64))
 	j.addParameter("GPU_MEM_COUNT", userJson["gpu_mem_count"].(float64))
@@ -105,7 +104,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("IF_STORAGE_LOCALE", userJson["if_storage_locale"].(bool))
 	j.addParameter("STORAGE_PATH", userJson["storage_path"].(string))
 	j.addParameter("DEPLOY_MASTER_PASSWORD", "dmai2019999")
-	//j.addParameter("USE_SERVICE", true)
 	j.addParameter("BUILD_PLATFORM", "adp")
 	// all
 	j.addParameter("GLOABL_STRING", tools.BoolToString(userJson["if_use_grpc"].(bool))+":::"+
@@ -126,7 +124,8 @@ func NewJenkinsBuild(c *gin.Context) {
 		userJson["deploy_env_status"].(string)+":::"+
 		userJson["deploy_env"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_istio"].(bool))+":::"+
-		tools.BoolToString(userJson["if_use_apollo_offline_env"].(bool)))
+		tools.BoolToString(userJson["if_use_apollo_offline_env"].(bool))+":::"+
+		userJson["yaml_env"].(string))
 
 	//
 	data, err := json.Marshal(j.parameter)

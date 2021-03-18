@@ -9,31 +9,32 @@ import (
 )
 
 type UpdateDeploy struct {
-	AppId              uint   `json:"app_id" gorm:"comment:'应用的ID'"`
-	Branch             string `json:"branch" gorm:"type:varchar(80);comment:'git仓库的分支名'"`
-	EnvId              uint   `json:"env_id" gorm:"comment:'环境ID'"`
-	GitCommitId        string `json:"git_commit_id" gorm:"type:varchar(150);comment:'git仓库的commitID'"`
-	GitTag             string `json:"git_tag" gorm:"type:varchar(150);comment:'git仓库的tag'"`
-	ID                 uint   `json:"id" gorm:"primary_key;comment:'工单ID'"`
-	Name               string `json:"name" gorm:"type:varchar(80);comment:'工单名字'"`
-	OwnerEnglishName   string `json:"owner_english_name" gorm:"type:varchar(80);comment:'工单所属英文名'"`
-	OwnerChinaName     string `json:"owner_china_name" gorm:"type:varchar(80);comment:'工单所属中文名'"`
-	Status             string `json:"status" gorm:"type:varchar(20);comment:'工单状态'"`
-	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80);comment:'代码版本控制方式'"`
-	PodNums            int    `json:"pod_nums" gorm:"default:1;comment:'POD数量'"`
-	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:'是否需要存储'"`
-	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:'存储路径'"`
-	CpuMinRequire      int    `json:"cpu_min_require" gorm:"default:100;comment:'CPU需求最小值'"`
-	CpuMaxRequire      int    `json:"cpu_max_require" gorm:"default:200;comment:'CPU最大限制'"`
-	MemoryMinRequire   int    `json:"memory_min_require" gorm:"default:200;comment:'内存需求最小值'"`
-	MemoryMaxRequire   int    `json:"memory_max_require" gorm:"default:400;comment:'内存最大限制'"`
-	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:'gpu使用方式'"`
-	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:'gpu卡数量'"`
-	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:'gpu显存大小'"`
-	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:'gpu型号'"`
-	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:'apollo集群名字'"`
-	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:'apollo的namespace'"`
-	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:'k8s的namespace'"`
+	AppId              uint   `json:"app_id" gorm:"comment:应用的ID"`
+	Branch             string `json:"branch" gorm:"type:varchar(80);comment:git仓库的分支名"`
+	EnvId              uint   `json:"env_id" gorm:"comment:环境ID"`
+	GitCommitId        string `json:"git_commit_id" gorm:"type:varchar(150);comment:git仓库的commitID"`
+	GitTag             string `json:"git_tag" gorm:"type:varchar(150);comment:git仓库的tag"`
+	ID                 uint   `json:"id" gorm:"primary_key;comment:工单ID"`
+	Name               string `json:"name" gorm:"type:varchar(80);comment:工单名字"`
+	OwnerEnglishName   string `json:"owner_english_name" gorm:"type:varchar(80);comment:工单所属英文名"`
+	OwnerChinaName     string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
+	Status             string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
+	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
+	PodNums            int    `json:"pod_nums" gorm:"default:1;comment:POD数量"`
+	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
+	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
+	CpuMinRequire      int    `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
+	CpuMaxRequire      int    `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
+	MemoryMinRequire   int    `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
+	MemoryMaxRequire   int    `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
+	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
+	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:gpu卡数量"`
+	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:gpu显存大小"`
+	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
+	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
+	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
+	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
+	YamlEnv       	   string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
 	JsVersion          string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
@@ -224,7 +225,7 @@ type ReqJenkinsBuild struct {
 	IfUseIstio                bool   `json:"if_use_istio"`
 	IfUseApolloOfflineEnv     bool   `json:"if_use_apollo_offline_env"`
 	JsVersion                 string `json:"js_version"`
-	//ModelBranch               string `json:"model_branch"`
+	YamlEnv               	  string `json:"yaml_env"`
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
@@ -273,7 +274,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ApolloClusterName = d.ApolloClusterName
 	r.ApolloNamespace = d.ApolloNamespace
 	r.JsVersion = d.JsVersion
-	//r.ModelBranch = d.ModelBranch
+	r.YamlEnv = d.YamlEnv
 	r.DeployEnv = env.Name
 	r.DeployEnvStatus = env.Status
 	r.Replics = d.PodNums
@@ -283,12 +284,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.CpuLimit = strconv.Itoa(d.CpuMaxRequire) + "m"
 	r.MemoryRequest = strconv.Itoa(d.MemoryMinRequire) + "Mi"
 	r.MemoryLimit = strconv.Itoa(d.MemoryMaxRequire) + "Mi"
-	// r.CpuRequest = strconv.Itoa(project.CpuMinRequire) + "m"
-	// r.CpuLimit = strconv.Itoa(project.CpuMaxRequire) + "m"
-	// r.MemoryRequest = strconv.Itoa(project.MemoryMinRequire) + "Mi"
-	// r.MemoryLimit = strconv.Itoa(project.MemoryMaxRequire) + "Mi"
-	//r.IfStorageLocale = *project.IfStorageLocale
-	//r.StoragePath = project.StoragePath
 	r.IfStorageLocale = *d.IfStorageLocale
 	r.StoragePath = d.StoragePath
 	r.IfCheckPodsStatus = *project.IfCheckPodsStatus
