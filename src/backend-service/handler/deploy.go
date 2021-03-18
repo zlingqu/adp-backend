@@ -349,11 +349,13 @@ func GetDeploy(c *gin.Context) {
 	var count int64
 	db := m.DB
 
-	if rEnvName != "" {
-		db.Table("deploy as d").Select("d.*,p.name as app_name,e.name as env_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id").Joins("join env as e on d.env_id=e.id")
-	} else {
-		db = db.Table("deploy as d").Select("d.*,p.name as app_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id")
-	}
+	//if rEnvName != "" {
+	//	db.Table("deploy as d").Select("d.*,p.name as app_name,e.name as env_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id").Joins("join env as e on d.env_id=e.id")
+	//} else {
+	//	db = db.Table("deploy as d").Select("d.*,p.name as app_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id")
+	//}
+	db = db.Table("deploy as d").Select("d.*,p.name as app_name,e.name as env_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id").Joins("join env as e on d.env_id=e.id")
+
 
 	if rOwnerName != "" {
 		db = db.Where("d.owner_china_name in (?)", strings.Split(rOwnerName, ","))

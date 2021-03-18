@@ -35,6 +35,7 @@ type UpdateDeploy struct {
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
 	YamlEnv       	   string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
+	AndroidFlavor	   string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
 	JsVersion          string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
@@ -226,6 +227,7 @@ type ReqJenkinsBuild struct {
 	IfUseApolloOfflineEnv     bool   `json:"if_use_apollo_offline_env"`
 	JsVersion                 string `json:"js_version"`
 	YamlEnv               	  string `json:"yaml_env"`
+	AndroidFlavor			  string `json:"android_flavor"`
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
@@ -289,6 +291,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.IfCheckPodsStatus = *project.IfCheckPodsStatus
 	r.IfUseIstio = *project.IfUseIstio
 	r.IfUseApolloOfflineEnv = *project.IfUseApolloOfflineEnv
+	r.AndroidFlavor = d.AndroidFlavor
 
 	if r.ProductName == "default" {
 		r.ProductName = project.OwnedProduct

@@ -125,7 +125,9 @@ func NewJenkinsBuild(c *gin.Context) {
 		userJson["deploy_env"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_istio"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_apollo_offline_env"].(bool))+":::"+
-		userJson["yaml_env"].(string))
+		userJson["yaml_env"].(string)+":::"+
+		userJson["android_flavor"].(string))
+
 
 	//
 	data, err := json.Marshal(j.parameter)
