@@ -93,7 +93,7 @@ func NewMisLdapService() *MisLdapService {
 				L      string `json:"l"`
 				IsShow string `json:"isShow"`
 			}{
-				L:      "中国-广州",
+				L:      "*",
 				IsShow: "1",
 			},
 			Attributes: []string{"cn", "displayName"},
