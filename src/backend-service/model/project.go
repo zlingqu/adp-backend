@@ -59,11 +59,11 @@ type Project struct {
 	IfUseGbs                  *bool     `json:"if_use_gbs" gorm:"default:0"`
 	IfUseSticky               *bool     `json:"if_use_sticky" gorm:"default:0"`
 	IfCompile                 *bool     `json:"if_compile" gorm:"default:0"`
-	IfCompileCache            *bool     `json:"if_compile_cache" gorm:"default:0"`
-	IfCompileParam            *bool     `json:"if_compile_param" gorm:"default:0"`
-	CompileParam              string    `json:"compile_param" gorm:"type:varchar(300)"`
-	IfCompileImage            *bool     `json:"if_compile_image" gorm:"default:0"`
-	CompileImage              string    `json:"compile_image" gorm:"type:varchar(500)"`
+	//IfCompileCache            *bool     `json:"if_compile_cache" gorm:"default:0"`
+	//IfCompileParam            *bool     `json:"if_compile_param" gorm:"default:0"`
+	//CompileParam              string    `json:"compile_param" gorm:"type:varchar(300)"`
+	//IfCompileImage            *bool     `json:"if_compile_image" gorm:"default:0"`
+	//CompileImage              string    `json:"compile_image" gorm:"type:varchar(500)"`
 	IfMakeImage               *bool     `json:"if_make_image" gorm:"default:0"`
 	IfUseModel                *bool     `json:"if_use_model" gorm:"default:0"`
 	IfUseGitManagerModel      *bool     `json:"if_use_git_manager_model" gorm:"default:0"`

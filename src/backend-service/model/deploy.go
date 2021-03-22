@@ -173,11 +173,11 @@ type ReqJenkinsBuild struct {
 	UnityAppName              string `json:"unity_app_name"`
 	DeployEnvType             string `json:"deploy_env_type"`
 	IfCompile                 bool   `json:"if_compile"`
-	IfCompileCache            bool   `json:"if_compile_cache"`
-	IfCompileParam            bool   `json:"if_compile_param"`
-	CompileParam              string `json:"compile_param"`
-	IfCompileImage            bool   `json:"if_compile_image"`
-	CompileImage              string `json:"compile_image"`
+	//IfCompileCache            bool   `json:"if_compile_cache"`
+	//IfCompileParam            bool   `json:"if_compile_param"`
+	//CompileParam              string `json:"compile_param"`
+	//IfCompileImage            bool   `json:"if_compile_image"`
+	//CompileImage              string `json:"compile_image"`
 	IfMakeImage               bool   `json:"if_make_image"`
 	IfUseDomainName           bool   `json:"if_use_domain_name"`
 	DomainName                string `json:"domain_name"`
@@ -238,11 +238,11 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.IfAddUnityProject = *project.IfAddUnityProject
 	r.DeployEnvType = project.DeployEnvType
 	r.IfCompile = *project.IfCompile
-	r.IfCompileCache = *project.IfCompileCache
-	r.IfCompileParam = *project.IfCompileParam
-	r.CompileParam = project.CompileParam
-	r.IfCompileImage = *project.IfCompileImage
-	r.CompileImage = project.CompileImage
+	//r.IfCompileCache = *project.IfCompileCache
+	//r.IfCompileParam = *project.IfCompileParam
+	//r.CompileParam = project.CompileParam
+	//r.IfCompileImage = *project.IfCompileImage
+	//r.CompileImage = project.CompileImage
 	r.IfMakeImage = *project.IfMakeImage
 	r.IfUseDomainName = *project.IfUseDomainName
 	r.DomainName = project.DomainName

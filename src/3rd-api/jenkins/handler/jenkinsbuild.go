@@ -75,8 +75,8 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("NAMESPACE", userJson["product_name"].(string))
 	j.addParameter("GIT_ADDRESS", userJson["git_address"].(string))
 	j.addParameter("CODE_LANGUAGE", userJson["code_language"].(string))
-	j.addParameter("COMPILE", userJson["if_compile"].(bool))
-	j.addParameter("COMPILE_PARAM", userJson["compile_param"].(string))
+	j.addParameter("IF_COMPILE", userJson["if_compile"].(bool))
+	//j.addParameter("COMPILE_PARAM", userJson["compile_param"].(string))
 	j.addParameter("IF_MAKE_IMAGE", userJson["if_make_image"].(bool))
 	j.addParameter("DEPLOY", userJson["if_deploy"].(bool))
 	j.addParameter("DOMAIN", userJson["domain_name"].(string))
@@ -112,11 +112,11 @@ func NewJenkinsBuild(c *gin.Context) {
 		tools.BoolToString(userJson["if_add_unity_project"].(bool))+":::"+
 		userJson["unity_app_name"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_root_dockerfile"].(bool))+":::"+
-		tools.BoolToString(userJson["if_compile_param"].(bool))+":::"+
-		tools.BoolToString(userJson["if_compile_image"].(bool))+":::"+
-		userJson["compile_image"].(string)+":::"+
+		//tools.BoolToString(userJson["if_compile_param"].(bool))+":::"+
+		//tools.BoolToString(userJson["if_compile_image"].(bool))+":::"+
+		//userJson["compile_image"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_gbs"].(bool))+":::"+
-		tools.BoolToString(userJson["if_compile_cache"].(bool))+":::"+
+		//tools.BoolToString(userJson["if_compile_cache"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_model"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_git_manager_model"].(bool))+":::"+
 		tools.BoolToString(userJson["if_save_model_build_computer"].(bool))+":::"+
