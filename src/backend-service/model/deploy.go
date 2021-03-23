@@ -23,10 +23,10 @@ type UpdateDeploy struct {
 	PodNums            int    `json:"pod_nums" gorm:"default:1;comment:POD数量"`
 	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
 	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire      int    `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
-	CpuMaxRequire      int    `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
-	MemoryMinRequire   int    `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
-	MemoryMaxRequire   int    `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
+	CpuMinRequire      *int    `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
+	CpuMaxRequire      *int    `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
+	MemoryMinRequire   *int    `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
+	MemoryMaxRequire   *int    `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
 	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
 	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:gpu卡数量"`
 	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:gpu显存大小"`
@@ -282,10 +282,10 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.Replics = d.PodNums
 	r.ContainerPort = project.ContainerPort
 	r.ServiceListenPort = project.ServiceListenPort
-	r.CpuRequest = strconv.Itoa(d.CpuMinRequire) + "m"
-	r.CpuLimit = strconv.Itoa(d.CpuMaxRequire) + "m"
-	r.MemoryRequest = strconv.Itoa(d.MemoryMinRequire) + "Mi"
-	r.MemoryLimit = strconv.Itoa(d.MemoryMaxRequire) + "Mi"
+	r.CpuRequest = strconv.Itoa(*d.CpuMinRequire) + "m"
+	r.CpuLimit = strconv.Itoa(*d.CpuMaxRequire) + "m"
+	r.MemoryRequest = strconv.Itoa(*d.MemoryMinRequire) + "Mi"
+	r.MemoryLimit = strconv.Itoa(*d.MemoryMaxRequire) + "Mi"
 	r.IfStorageLocale = *d.IfStorageLocale
 	r.StoragePath = d.StoragePath
 	r.IfCheckPodsStatus = *project.IfCheckPodsStatus

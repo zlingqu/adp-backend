@@ -328,14 +328,12 @@ func PostDeploy(c *gin.Context) {
 
 func GetDeploy(c *gin.Context) {
 
-
 	name := strings.TrimSpace(c.DefaultQuery("name", "")) //模糊搜索用的
 	rDeployNamespace := strings.TrimSpace(c.DefaultQuery("deploy_namespace", ""))
 	rOwnerName := strings.TrimSpace(c.DefaultQuery("owner_name", ""))
 	rAppName := strings.TrimSpace(c.DefaultQuery("app_name", ""))
 	rEnvName := strings.TrimSpace(c.DefaultQuery("env_name", ""))
 	limit, offset := tools.GetMysqlLimitOffset(c.DefaultQuery("page", "1"), c.DefaultQuery("size", "10"))
-
 
 	type RespDeploy struct {
 		m.ReqDeploy
@@ -356,7 +354,6 @@ func GetDeploy(c *gin.Context) {
 	//}
 	db = db.Table("deploy as d").Select("d.*,p.name as app_name,e.name as env_name,p.language_type as language_type,p.git_repository as git_repository").Joins("join project as p on  d.app_id=p.id").Joins("join env as e on d.env_id=e.id")
 
-
 	if rOwnerName != "" {
 		db = db.Where("d.owner_china_name in (?)", strings.Split(rOwnerName, ","))
 	}
@@ -370,7 +367,7 @@ func GetDeploy(c *gin.Context) {
 		db = db.Where("e.name in (?)", strings.Split(rEnvName, ","))
 	}
 	if name != "" {
-		db = db.Where("d.name like ? or owner_english_name like ? or d.owner_china_name like ? or p.name like ? ", "%"+name+"%","%"+name+"%","%"+name+"%","%"+name+"%")
+		db = db.Where("d.name like ? or owner_english_name like ? or d.owner_china_name like ? or p.name like ? ", "%"+name+"%", "%"+name+"%", "%"+name+"%", "%"+name+"%")
 	}
 
 	db.Scan(&respDeploy).Count(&count).Limit(limit).Offset(offset)
