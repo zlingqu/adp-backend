@@ -318,7 +318,8 @@ func JenkinsJobCfgFile(appName string, gitAddress string) string {
           <id>%s-%d</id>
           <remote>%s</remote>
           <credentialsId>devops-use</credentialsId>
-          <traits>
+		  <traits>
+		    <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
 			<jenkins.plugins.git.traits.SubmoduleOptionTrait>
 				<extension class="hudson.plugins.git.extensions.impl.SubmoduleOption">
 					<disableSubmodules>false</disableSubmodules>

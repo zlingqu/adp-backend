@@ -45,6 +45,7 @@
           <remote>https://gitlab.dm-ai.cn/application-engineering/devops/jenkins-test.git</remote>
           <credentialsId>devops-use</credentialsId>
           <traits>
+            <jenkins.plugins.git.traits.BranchDiscoveryTrait/>
             <jenkins.plugins.git.traits.SubmoduleOptionTrait>
               <extension class="hudson.plugins.git.extensions.impl.SubmoduleOption">
                 <disableSubmodules>false</disableSubmodules>
