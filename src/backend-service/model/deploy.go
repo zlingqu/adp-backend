@@ -275,7 +275,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.VersionControlMode = d.VersionControlMode
 	r.GitCommitId = d.GitCommitId
 	r.GitTag = d.GitTag
-	r.IfUseApollo = d.IfUseApollo
+	r.IfUseApollo = *d.IfUseApollo
 	r.ApolloClusterName = d.ApolloClusterName
 	r.ApolloNamespace = d.ApolloNamespace
 	r.JsVersion = d.JsVersion
