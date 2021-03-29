@@ -23,19 +23,20 @@ type UpdateDeploy struct {
 	PodNums            int    `json:"pod_nums" gorm:"default:1;comment:POD数量"`
 	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
 	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire      *int    `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
-	CpuMaxRequire      *int    `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
-	MemoryMinRequire   *int    `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
-	MemoryMaxRequire   *int    `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
+	CpuMinRequire      *int   `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
+	CpuMaxRequire      *int   `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
+	MemoryMinRequire   *int   `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
+	MemoryMaxRequire   *int   `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
 	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
 	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:gpu卡数量"`
 	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:gpu显存大小"`
 	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
+	IfUseApollo        *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
-	YamlEnv       	   string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
-	AndroidFlavor	   string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
+	YamlEnv            string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
+	AndroidFlavor      string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
 	JsVersion          string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
@@ -165,14 +166,14 @@ type ID struct {
 }
 
 type ReqJenkinsBuild struct {
-	GitAddress                string `json:"git_address"`
-	AppName                   string `json:"app_name"`
-	ProductName               string `json:"product_name"`
-	CodeLanguage              string `json:"code_language"`
-	IfAddUnityProject         bool   `json:"if_add_unity_project"`
-	UnityAppName              string `json:"unity_app_name"`
-	DeployEnvType             string `json:"deploy_env_type"`
-	IfCompile                 bool   `json:"if_compile"`
+	GitAddress        string `json:"git_address"`
+	AppName           string `json:"app_name"`
+	ProductName       string `json:"product_name"`
+	CodeLanguage      string `json:"code_language"`
+	IfAddUnityProject bool   `json:"if_add_unity_project"`
+	UnityAppName      string `json:"unity_app_name"`
+	DeployEnvType     string `json:"deploy_env_type"`
+	IfCompile         bool   `json:"if_compile"`
 	//IfCompileCache            bool   `json:"if_compile_cache"`
 	//IfCompileParam            bool   `json:"if_compile_param"`
 	//CompileParam              string `json:"compile_param"`
@@ -209,6 +210,7 @@ type ReqJenkinsBuild struct {
 	VersionControlMode        string `json:"version_control_mode"`
 	GitCommitId               string `json:"git_commit_id"`
 	GitTag                    string `json:"git_tag"`
+	IfUseApollo               bool   `json:"if_use_apollo"`
 	ApolloClusterName         string `json:"apollo_cluster_name"`
 	ApolloNamespace           string `json:"apollo_namespace"`
 	DeployEnv                 string `json:"deploy_env"`
@@ -226,8 +228,8 @@ type ReqJenkinsBuild struct {
 	IfUseIstio                bool   `json:"if_use_istio"`
 	IfUseApolloOfflineEnv     bool   `json:"if_use_apollo_offline_env"`
 	JsVersion                 string `json:"js_version"`
-	YamlEnv               	  string `json:"yaml_env"`
-	AndroidFlavor			  string `json:"android_flavor"`
+	YamlEnv                   string `json:"yaml_env"`
+	AndroidFlavor             string `json:"android_flavor"`
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
@@ -273,6 +275,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.VersionControlMode = d.VersionControlMode
 	r.GitCommitId = d.GitCommitId
 	r.GitTag = d.GitTag
+	r.IfUseApollo = d.IfUseApollo
 	r.ApolloClusterName = d.ApolloClusterName
 	r.ApolloNamespace = d.ApolloNamespace
 	r.JsVersion = d.JsVersion

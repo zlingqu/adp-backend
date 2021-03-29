@@ -126,8 +126,8 @@ func NewJenkinsBuild(c *gin.Context) {
 		tools.BoolToString(userJson["if_use_istio"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_apollo_offline_env"].(bool))+":::"+
 		userJson["yaml_env"].(string)+":::"+
+		userJson["if_use_apollo"].(bool)+":::"+
 		userJson["android_flavor"].(string))
-
 
 	//
 	data, err := json.Marshal(j.parameter)
