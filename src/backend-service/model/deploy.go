@@ -225,7 +225,6 @@ type ReqJenkinsBuild struct {
 	StoragePath               string `json:"storage_path"`
 	IfCheckPodsStatus         bool   `json:"if_check_pods_status"`
 	IfUseIstio                bool   `json:"if_use_istio"`
-	IfUseApolloOfflineEnv     bool   `json:"if_use_apollo_offline_env"`
 	JsVersion                 string `json:"js_version"`
 	YamlEnv                   string `json:"yaml_env"`
 	AndroidFlavor             string `json:"android_flavor"`
@@ -291,7 +290,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.StoragePath = d.StoragePath
 	r.IfCheckPodsStatus = *project.IfCheckPodsStatus
 	r.IfUseIstio = *project.IfUseIstio
-	r.IfUseApolloOfflineEnv = *project.IfUseApolloOfflineEnv
 	r.AndroidFlavor = d.AndroidFlavor
 	r.IfUseApolloForDockerfile = *d.IfUseApolloForDockerfile
 	r.ApolloEnvForDockerfile = d.ApolloEnvForDockerfile
