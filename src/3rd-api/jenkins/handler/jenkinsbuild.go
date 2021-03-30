@@ -66,7 +66,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("APP_NAME", userJson["app_name"].(string))
 	j.addParameter("ENV_TYPE", userJson["deploy_env_type"].(string))
 	j.addParameter("REPLICAS", userJson["replics"].(float64))
-	//j.addParameter("CONTAINER_PORT", userJson["container_port"].(float64))
 	j.addParameter("CONTAINER_PORT", userJson["service_listen_port"].(string))
 	j.addParameter("CPU_REQUEST", userJson["cpu_request"].(string))
 	j.addParameter("CPU_LIMIT", userJson["cpu_limit"].(string))
@@ -76,7 +75,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("GIT_ADDRESS", userJson["git_address"].(string))
 	j.addParameter("CODE_LANGUAGE", userJson["code_language"].(string))
 	j.addParameter("IF_COMPILE", userJson["if_compile"].(bool))
-	//j.addParameter("COMPILE_PARAM", userJson["compile_param"].(string))
 	j.addParameter("IF_MAKE_IMAGE", userJson["if_make_image"].(bool))
 	j.addParameter("DEPLOY", userJson["if_deploy"].(bool))
 	j.addParameter("DOMAIN", userJson["domain_name"].(string))
@@ -112,11 +110,7 @@ func NewJenkinsBuild(c *gin.Context) {
 		tools.BoolToString(userJson["if_add_unity_project"].(bool))+":::"+
 		userJson["unity_app_name"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_root_dockerfile"].(bool))+":::"+
-		//tools.BoolToString(userJson["if_compile_param"].(bool))+":::"+
-		//tools.BoolToString(userJson["if_compile_image"].(bool))+":::"+
-		//userJson["compile_image"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_gbs"].(bool))+":::"+
-		//tools.BoolToString(userJson["if_compile_cache"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_model"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_git_manager_model"].(bool))+":::"+
 		tools.BoolToString(userJson["if_save_model_build_computer"].(bool))+":::"+
@@ -127,7 +121,11 @@ func NewJenkinsBuild(c *gin.Context) {
 		tools.BoolToString(userJson["if_use_apollo_offline_env"].(bool))+":::"+
 		userJson["yaml_env"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_apollo"].(bool))+":::"+
-		userJson["android_flavor"].(string))
+		userJson["android_flavor"].(string)+":::"+
+	    tools.BoolToString(userJson["if_use_apollo_for_dockerfile"].(bool))+":::"+
+		userJson["apollo_env_for_dockerfile"].(string)+":::"+
+		userJson["apollo_cluster_for_dockerfile"].(string)+":::"+
+		userJson["apollo_namespace_for_dockerfile"].(string))
 
 	//
 	data, err := json.Marshal(j.parameter)

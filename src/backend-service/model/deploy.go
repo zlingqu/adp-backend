@@ -34,6 +34,10 @@ type UpdateDeploy struct {
 	IfUseApollo        *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
+	IfUseApolloForDockerfile        *bool  `json:"if_use_apollo_for_dockerfile" gorm:"default:0;comment:是否将apollo配置注入环境变量到Dockerfile"`
+	ApolloEnvForDockerfile  string `json:"apollo_env_for_dockerfile" gorm:"default:'prd';type:varchar(80);comment:关联的apollo环境名字"`
+	ApolloClusterForDockerfile  string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
+	ApolloNamespaceForDockerfile    string `json:"apollo_namespace_for_dockerfile" gorm:"default:'application';type:varchar(80);comment:关联的apollo空间名"`
 	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
 	YamlEnv            string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
 	AndroidFlavor      string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
@@ -174,11 +178,6 @@ type ReqJenkinsBuild struct {
 	UnityAppName      string `json:"unity_app_name"`
 	DeployEnvType     string `json:"deploy_env_type"`
 	IfCompile         bool   `json:"if_compile"`
-	//IfCompileCache            bool   `json:"if_compile_cache"`
-	//IfCompileParam            bool   `json:"if_compile_param"`
-	//CompileParam              string `json:"compile_param"`
-	//IfCompileImage            bool   `json:"if_compile_image"`
-	//CompileImage              string `json:"compile_image"`
 	IfMakeImage               bool   `json:"if_make_image"`
 	IfUseDomainName           bool   `json:"if_use_domain_name"`
 	DomainName                string `json:"domain_name"`
@@ -230,6 +229,10 @@ type ReqJenkinsBuild struct {
 	JsVersion                 string `json:"js_version"`
 	YamlEnv                   string `json:"yaml_env"`
 	AndroidFlavor             string `json:"android_flavor"`
+	IfUseApolloForDockerfile bool  `json:"if_use_apollo_for_dockerfile"`
+	ApolloEnvForDockerfile string `json:"apollo_env_for_dockerfile"`
+	ApolloClusterForDockerfile string `json:"apollo_cluster_for_dockerfile"`
+	ApolloNamespaceForDockerfile string `json:"apollo_namespace_for_dockerfile"`
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
@@ -240,11 +243,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.IfAddUnityProject = *project.IfAddUnityProject
 	r.DeployEnvType = project.DeployEnvType
 	r.IfCompile = *project.IfCompile
-	//r.IfCompileCache = *project.IfCompileCache
-	//r.IfCompileParam = *project.IfCompileParam
-	//r.CompileParam = project.CompileParam
-	//r.IfCompileImage = *project.IfCompileImage
-	//r.CompileImage = project.CompileImage
 	r.IfMakeImage = *project.IfMakeImage
 	r.IfUseDomainName = *project.IfUseDomainName
 	r.DomainName = project.DomainName
@@ -295,6 +293,10 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.IfUseIstio = *project.IfUseIstio
 	r.IfUseApolloOfflineEnv = *project.IfUseApolloOfflineEnv
 	r.AndroidFlavor = d.AndroidFlavor
+	r.IfUseApolloForDockerfile = *d.IfUseApolloForDockerfile
+	r.ApolloEnvForDockerfile = d.ApolloEnvForDockerfile
+	r.ApolloClusterForDockerfile = d.ApolloClusterForDockerfile
+	r.ApolloNamespaceForDockerfile = d.ApolloNamespaceForDockerfile
 
 	if r.ProductName == "default" {
 		r.ProductName = project.OwnedProduct
