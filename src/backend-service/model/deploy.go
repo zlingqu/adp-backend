@@ -191,7 +191,6 @@ type ReqJenkinsBuild struct {
 	IfUseGitManagerModel      bool   `json:"if_use_git_manager_model"`
 	ModelGitRepository        string `json:"model_git_repository"`
 	IfSaveModelBuildComputer  bool   `json:"if_save_model_build_computer"`
-	IfUseConfigmap            bool   `json:"if_use_configmap"`
 	IfUseAutoDeployFile       bool   `json:"if_use_auto_deploy_file"`
 	AutoDeployContent         string `json:"auto_deploy_content"`
 	IfUseCustomDockerfile     bool   `json:"if_use_custom_dockerfile"`
@@ -255,7 +254,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.IfUseGitManagerModel = *project.IfUseGitManagerModel
 	r.ModelGitRepository = project.ModelGitRepository
 	r.IfSaveModelBuildComputer = *project.IfSaveModelBuildComputer
-	r.IfUseConfigmap = *project.IfUseConfigmap
 	r.IfUseAutoDeployFile = *project.IfUseAutoDeployFile
 	r.AutoDeployContent = project.AutoDeployContent
 	r.IfUseCustomDockerfile = *project.IfUseCustomDockerfile

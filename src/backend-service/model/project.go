@@ -64,7 +64,6 @@ type Project struct {
 	IfUseGitManagerModel      *bool     `json:"if_use_git_manager_model" gorm:"default:0"`
 	ModelGitRepository        string    `json:"model_git_repository"  gorm:"type:varchar(300)"`
 	IfSaveModelBuildComputer  *bool     `json:"if_save_model_build_computer" gorm:"default:0"`
-	IfUseConfigmap            *bool     `json:"if_use_configmap" gorm:"default:0"`
 	IfUseAutoDeployFile       *bool     `json:"if_use_auto_deploy_file" gorm:"default:0"`
 	AutoDeployContent         string    `json:"auto_deploy_content" gorm:"type:text"`
 	IfDeploy                  *bool     `json:"if_deploy" gorm:"default:0"`

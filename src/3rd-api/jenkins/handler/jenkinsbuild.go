@@ -97,7 +97,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("BRANCH_NAME", userJson["branch_name"])
 	j.addParameter("VERSION_CONTROL_MODE", userJson["version_control_mode"])
 	j.addParameter("USE_MODEL", userJson["if_use_model"].(bool))
-	j.addParameter("USE_CONFIGMAP", userJson["if_use_configmap"].(bool))
 	j.addParameter("IF_CHECK_PODS_STATUS", userJson["if_check_pods_status"].(bool))
 	j.addParameter("IF_STORAGE_LOCALE", userJson["if_storage_locale"].(bool))
 	j.addParameter("STORAGE_PATH", userJson["storage_path"].(string))
