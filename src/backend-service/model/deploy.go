@@ -31,6 +31,7 @@ type UpdateDeploy struct {
 	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:gpu卡数量"`
 	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:gpu显存大小"`
 	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
+	IfUsePodAntiAffinity        *bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
 	IfUseApollo        *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
 	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
 	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
@@ -208,6 +209,7 @@ type ReqJenkinsBuild struct {
 	VersionControlMode        string `json:"version_control_mode"`
 	GitCommitId               string `json:"git_commit_id"`
 	GitTag                    string `json:"git_tag"`
+	IfUsePodAntiAffinity      bool   `json:"if_use_pod_anti_affinity"`
 	IfUseApollo               bool   `json:"if_use_apollo"`
 	ApolloClusterName         string `json:"apollo_cluster_name"`
 	ApolloNamespace           string `json:"apollo_namespace"`
@@ -270,6 +272,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.VersionControlMode = d.VersionControlMode
 	r.GitCommitId = d.GitCommitId
 	r.GitTag = d.GitTag
+	r.IfUsePodAntiAffinity = *d.IfUsePodAntiAffinity
 	r.IfUseApollo = *d.IfUseApollo
 	r.ApolloClusterName = d.ApolloClusterName
 	r.ApolloNamespace = d.ApolloNamespace

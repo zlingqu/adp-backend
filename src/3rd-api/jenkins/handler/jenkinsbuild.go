@@ -123,7 +123,8 @@ func NewJenkinsBuild(c *gin.Context) {
 	    tools.BoolToString(userJson["if_use_apollo_for_dockerfile"].(bool))+":::"+
 		userJson["apollo_env_for_dockerfile"].(string)+":::"+
 		userJson["apollo_cluster_for_dockerfile"].(string)+":::"+
-		userJson["apollo_namespace_for_dockerfile"].(string))
+		userJson["apollo_namespace_for_dockerfile"].(string)+":::"+
+	    tools.BoolToString(userJson["if_use_pod_anti_affinity"].(bool)))
 
 	//
 	data, err := json.Marshal(j.parameter)
