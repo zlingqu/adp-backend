@@ -20,16 +20,16 @@ type UpdateDeploy struct {
 	OwnerChinaName     string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
 	Status             string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
 	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
-	PodNums            int    `json:"pod_nums" gorm:"default:1;comment:POD数量"`
+	PodNums            int    `json:"pod_nums" gorm:"type:bigint(20);default:1;comment:POD数量"`
 	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
 	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire      *int   `json:"cpu_min_require" gorm:"default:100;comment:CPU需求最小值"`
-	CpuMaxRequire      *int   `json:"cpu_max_require" gorm:"default:200;comment:CPU最大限制"`
-	MemoryMinRequire   *int   `json:"memory_min_require" gorm:"default:200;comment:内存需求最小值"`
-	MemoryMaxRequire   *int   `json:"memory_max_require" gorm:"default:400;comment:内存最大限制"`
+	CpuMinRequire      *int   `json:"cpu_min_require" gorm:"type:bigint(20);default:100;comment:CPU需求最小值"`
+	CpuMaxRequire      *int   `json:"cpu_max_require" gorm:"type:bigint(20);default:200;comment:CPU最大限制"`
+	MemoryMinRequire   *int   `json:"memory_min_require" gorm:"type:bigint(20);default:200;comment:内存需求最小值"`
+	MemoryMaxRequire   *int   `json:"memory_max_require" gorm:"type:bigint(20);default:400;comment:内存最大限制"`
 	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
-	GpuCardCount       int    `json:"gpu_card_count" gorm:"default:1;comment:gpu卡数量"`
-	GpuMemCount        int    `json:"gpu_mem_count" gorm:"default:2;comment:gpu显存大小"`
+	GpuCardCount       int    `json:"gpu_card_count" gorm:"type:bigint(20);default:1;comment:gpu卡数量"`
+	GpuMemCount        int    `json:"gpu_mem_count" gorm:"type:bigint(20);default:2;comment:gpu显存大小"`
 	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
 	IfUsePodAntiAffinity        *bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
 	IfUseApollo        *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
