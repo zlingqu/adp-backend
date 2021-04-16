@@ -56,7 +56,7 @@ job_k8s_dev_deploy:
   script:
     - cd /root
     - echo $K8S_DEV_TOKEN|base64 -d > .kube/config
-    - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
+    - kubectl set image deployment/$SERVER_NAME $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
     - dev
     - quzl
@@ -71,7 +71,7 @@ job_k8s_prd_deploy:
   script:
     - cd /root
     - echo $K8S_PRD_TOKEN|base64 -d > .kube/config
-    - kubectl set image deployment/adp $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
+    - kubectl set image deployment/$SERVER_NAME $SERVER_NAME=$IMAGE_TAG_NAME -n $PROJECT_NAME
   only:
     - dev
     - quzl
