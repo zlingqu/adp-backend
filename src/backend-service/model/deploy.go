@@ -9,63 +9,49 @@ import (
 )
 
 type UpdateDeploy struct {
-	AppId              uint   `json:"app_id" gorm:"comment:应用的ID"`
-	Branch             string `json:"branch" gorm:"type:varchar(80);comment:git仓库的分支名"`
-	EnvId              uint   `json:"env_id" gorm:"comment:环境ID"`
-	GitCommitId        string `json:"git_commit_id" gorm:"type:varchar(150);comment:git仓库的commitID"`
-	GitTag             string `json:"git_tag" gorm:"type:varchar(150);comment:git仓库的tag"`
-	ID                 uint   `json:"id" gorm:"primary_key;comment:工单ID"`
-	Name               string `json:"name" gorm:"type:varchar(80);comment:工单名字"`
-	OwnerEnglishName   string `json:"owner_english_name" gorm:"type:varchar(80);comment:工单所属英文名"`
-	OwnerChinaName     string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
-	Status             string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
-	VersionControlMode string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
-	PodNums            int    `json:"pod_nums" gorm:"type:bigint(20);default:1;comment:POD数量"`
-	IfStorageLocale    *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
-	StoragePath        string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire      *int   `json:"cpu_min_require" gorm:"type:bigint(20);default:100;comment:CPU需求最小值"`
-	CpuMaxRequire      *int   `json:"cpu_max_require" gorm:"type:bigint(20);default:200;comment:CPU最大限制"`
-	MemoryMinRequire   *int   `json:"memory_min_require" gorm:"type:bigint(20);default:200;comment:内存需求最小值"`
-	MemoryMaxRequire   *int   `json:"memory_max_require" gorm:"type:bigint(20);default:400;comment:内存最大限制"`
-	GpuControlMode     string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
-	GpuCardCount       int    `json:"gpu_card_count" gorm:"type:bigint(20);default:1;comment:gpu卡数量"`
-	GpuMemCount        int    `json:"gpu_mem_count" gorm:"type:bigint(20);default:2;comment:gpu显存大小"`
-	GpuType            string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
-	IfUsePodAntiAffinity        *bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
-	IfUseApollo        *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
-	ApolloClusterName  string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
-	ApolloNamespace    string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
+	AppId              				uint   `json:"app_id" gorm:"comment:应用的ID"`
+	Branch             				string `json:"branch" gorm:"type:varchar(80);comment:git仓库的分支名"`
+	EnvId              				uint   `json:"env_id" gorm:"comment:环境ID"`
+	GitCommitId        				string `json:"git_commit_id" gorm:"type:varchar(150);comment:git仓库的commitID"`
+	GitTag             				string `json:"git_tag" gorm:"type:varchar(150);comment:git仓库的tag"`
+	ID                 				uint   `json:"id" gorm:"primary_key;comment:工单ID"`
+	Name               				string `json:"name" gorm:"type:varchar(80);comment:工单名字"`
+	OwnerEnglishName   				string `json:"owner_english_name" gorm:"type:varchar(80);comment:工单所属英文名"`
+	OwnerChinaName     				string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
+	Status             				string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
+	VersionControlMode 				string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
+	PodNums            				int    `json:"pod_nums" gorm:"type:bigint(20);default:1;comment:POD数量"`
+	IfStorageLocale    				*bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
+	StoragePath        				string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
+	CpuMinRequire      				*int   `json:"cpu_min_require" gorm:"type:bigint(20);default:100;comment:CPU需求最小值"`
+	CpuMaxRequire      				*int   `json:"cpu_max_require" gorm:"type:bigint(20);default:200;comment:CPU最大限制"`
+	MemoryMinRequire   				*int   `json:"memory_min_require" gorm:"type:bigint(20);default:200;comment:内存需求最小值"`
+	MemoryMaxRequire   				*int   `json:"memory_max_require" gorm:"type:bigint(20);default:400;comment:内存最大限制"`
+	GpuControlMode     				string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
+	GpuCardCount       				int    `json:"gpu_card_count" gorm:"type:bigint(20);default:1;comment:gpu卡数量"`
+	GpuMemCount        				int    `json:"gpu_mem_count" gorm:"type:bigint(20);default:2;comment:gpu显存大小"`
+	GpuType            				string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
+	IfUsePodAntiAffinity        	*bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
+	IfUseApollo        				*bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
+	ApolloClusterName  				string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
+	ApolloNamespace    				string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
 	IfUseApolloForDockerfile        *bool  `json:"if_use_apollo_for_dockerfile" gorm:"default:0;comment:是否将apollo配置注入环境变量到Dockerfile"`
-	ApolloEnvForDockerfile  string `json:"apollo_env_for_dockerfile" gorm:"default:'prd';type:varchar(80);comment:关联的apollo环境名字"`
-	ApolloClusterForDockerfile  string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
+	ApolloEnvForDockerfile  		string `json:"apollo_env_for_dockerfile" gorm:"default:'prd';type:varchar(80);comment:关联的apollo环境名字"`
+	ApolloClusterForDockerfile  	string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
 	ApolloNamespaceForDockerfile    string `json:"apollo_namespace_for_dockerfile" gorm:"default:'application';type:varchar(80);comment:关联的apollo空间名"`
-	K8sNamespace       string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
-	YamlEnv            string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
-	AndroidFlavor      string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
-	JsVersion          string `json:"js_version" gorm:"type:varchar(80)"`
+	K8sNamespace       				string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
+	YamlEnv            				string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
+	AndroidFlavor      				string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
+	JsVersion          				string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
 type Deploy struct {
 	UpdateDeploy
-	//ID                  uint      `json:"id" gorm:"primary_key"`
 	CreatedAt  time.Time `json:"created_at" time_format:"2006-01-02 15:04:05" time_local:"1"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	LastDeploy time.Time `json:"last_deploy"`
-	//Name                string    `json:"name" gorm:"type:varchar(80);unique_index"`
-	//Name                string    `json:"name" gorm:"type:varchar(80)"`
-	App int `json:"app"`
-	//AppId               uint       `json:"app_id"`
 	Owner string `json:"owner" gorm:"type:varchar(80)"`
-	//OwnerEnglishName    string    `json:"owner_english_name" gorm:"type:varchar(80)"`
-	//OwnerChinaName      string    `json:"owner_china_name" gorm:"type:varchar(80)"`
-	//Branch              string    `json:"branch" gorm:"type:varchar(80)"`
-	Env int `json:"env"`
-	//EnvId               uint       `json:"env_id"`
 	Version string `json:"version" gorm:"type:varchar(80)"`
-	//VersionControlMode  string    `json:"version_control_mode" gorm:"type:varchar(80)"`
-	//GitCommitId         string    `json:"git_commit_id" gorm:"type:varchar(150)"`
-	//GitTag              string    `json:"git_tag" gorm:"type:varchar(150)"`
-	//Status              string    `json:"status" gorm:"type:varchar(20)"`
 	LastBuildInfo     string `json:"last_build_info" gorm:"type:text"`
 	JenkinsBuildToken string `json:"jenkins_build_token" gorm:"type:text"`
 }

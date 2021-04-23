@@ -123,16 +123,14 @@ func GetProjectV2(c *gin.Context) {
 	if languageType != "" {
 		db = db.Where("language_type in (?)", strings.Split(languageType, ","))
 	}
-	log.Println(ownedProduct, deployEnvType, languageType)
-	log.Println(len(ownedProduct), len(deployEnvType), len(languageType))
+	//log.Println(ownedProduct, deployEnvType, languageType)
+	//log.Println(len(ownedProduct), len(deployEnvType), len(languageType))
 
 	db.Find(&project).Count(&count).Limit(limit).Offset(offset)
-	//db.Model(&m.Project{}).Count(&count)
-	//m.Model.Limit(limit).Offset(offset).Where("name LIKE ?", "%" + name + "%").Find(&project)
-	//m.Model.Model(&m.Project{}).Where("name LIKE ?", "%" + name + "%").Count(&count)
 
-	log.Println(project)
-	log.Println(count)
+
+	//log.Println(project)
+	//log.Println(count)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":  0,
