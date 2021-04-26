@@ -124,7 +124,11 @@ func NewJenkinsBuild(c *gin.Context) {
 		userJson["apollo_env_for_dockerfile"].(string)+":::"+
 		userJson["apollo_cluster_for_dockerfile"].(string)+":::"+
 		userJson["apollo_namespace_for_dockerfile"].(string)+":::"+
-	    tools.BoolToString(userJson["if_use_pod_anti_affinity"].(bool)))
+		userJson["domain_before"].(string)+":::"+
+		userJson["domain_middle"].(string)+":::"+
+		userJson["domain_after"].(string)+":::"+
+		userJson["domain_path"].(string)+":::"+
+		tools.BoolToString(userJson["if_use_pod_anti_affinity"].(bool)))
 
 	//
 	data, err := json.Marshal(j.parameter)

@@ -31,6 +31,7 @@ type ProjectIdNameGitLangProduct struct {
 	OwnedProduct         string `json:"owned_product" gorm:"type:varchar(80)"`
 	IfDeploy             bool   `json:"if_deploy"`
 	DeployEnvType		 string `json:"deploy_env_type"`
+	ServeType		 	 string `json:"serve_type"`
 	IfUseModel           bool   `json:"if_use_model"`
 	IfUseGitManagerModel bool   `json:"if_use_git_manager_model"`
 	ModelGitRepository   string `json:"model_git_repository"  gorm:"type:varchar(300)"`

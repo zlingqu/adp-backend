@@ -42,6 +42,10 @@ type UpdateDeploy struct {
 	K8sNamespace       				string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
 	YamlEnv            				string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
 	AndroidFlavor      				string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
+	DomainBefore					string `json:"domain_before" gorm:"type:varchar(20);default:None;comment:域名前缀值"`
+	DomainMiddle					string `json:"domain_middle" gorm:"type:varchar(80);default:None;comment:域名中间值"`
+	DomainAfter					    string `json:"domain_after" gorm:"type:varchar(80);default:None;comment:域名后缀值"`
+	DomainPath						string `json:"domain_path" gorm:"type:varchar(256);default:None;comment:域名path路径"`
 	JsVersion          				string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
@@ -219,6 +223,12 @@ type ReqJenkinsBuild struct {
 	ApolloEnvForDockerfile string `json:"apollo_env_for_dockerfile"`
 	ApolloClusterForDockerfile string `json:"apollo_cluster_for_dockerfile"`
 	ApolloNamespaceForDockerfile string `json:"apollo_namespace_for_dockerfile"`
+	DomainBefore 			string `json:"domain_before"`
+	DomainMiddle 			string `json:"domain_middle"`
+	DomainAfter 			string `json:"domain_after"`
+	DomainPath 				string `json:"domain_path"`
+
+
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
@@ -282,6 +292,10 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ApolloEnvForDockerfile = d.ApolloEnvForDockerfile
 	r.ApolloClusterForDockerfile = d.ApolloClusterForDockerfile
 	r.ApolloNamespaceForDockerfile = d.ApolloNamespaceForDockerfile
+	r.DomainBefore = d.DomainBefore
+	r.DomainMiddle = d.DomainMiddle
+	r.DomainAfter = d.DomainAfter
+	r.DomainPath = d.DomainPath
 
 	if r.ProductName == "default" {
 		r.ProductName = project.OwnedProduct
