@@ -315,11 +315,26 @@ func PostDeploy(c *gin.Context) {
 	t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 	deploy.LastDeploy = t2
 
-	// if deploy.VersionControlMode=="GitCommitId" && deploy.GitCommitId=="last"{
-	// 	deploy.GitCommitId= "abc"
-	// }
+    var count int64
+	m.DB.Debug().Where("env_id = ? and domain_middle = ? and domain_after = ? and domain_path = ?",deploy.EnvId,deploy.DomainMiddle,deploy.DomainAfter,deploy.DomainPath).Find(&deploy).Count(&count)
 
-	m.DB.Create(deploy)
+
+	if count >= 1 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"res":  "域名冲突，该环境已经存在此域名！",
+		})
+		return
+	}
+		err:=m.DB.Create(deploy).Error
+		if err != nil{
+			c.JSON(http.StatusOK, gin.H{
+				"code": 500,
+				"res":  err.Error(),
+			})
+			return
+		}
+
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"res":  "ok",
