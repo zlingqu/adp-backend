@@ -54,8 +54,6 @@ type Deploy struct {
 	CreatedAt  time.Time `json:"created_at" time_format:"2006-01-02 15:04:05" time_local:"1"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	LastDeploy time.Time `json:"last_deploy"`
-	Owner string `json:"owner" gorm:"type:varchar(80)"`
-	Version string `json:"version" gorm:"type:varchar(80)"`
 	LastBuildInfo     string `json:"last_build_info" gorm:"type:text"`
 	JenkinsBuildToken string `json:"jenkins_build_token" gorm:"type:text"`
 }
