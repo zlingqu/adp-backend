@@ -262,7 +262,6 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.GpuMemCount = d.GpuMemCount
 	r.GpuType = d.GpuType
 	r.BranchName = d.Branch
-	r.Version = d.Version
 	r.VersionControlMode = d.VersionControlMode
 	r.GitCommitId = d.GitCommitId
 	r.GitTag = d.GitTag
