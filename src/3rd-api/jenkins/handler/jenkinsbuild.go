@@ -76,7 +76,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("CODE_LANGUAGE", userJson["code_language"].(string))
 	j.addParameter("IF_COMPILE", userJson["if_compile"].(bool))
 	j.addParameter("IF_MAKE_IMAGE", userJson["if_make_image"].(bool))
-	j.addParameter("DEPLOY", userJson["if_deploy"].(bool))
+	j.addParameter("IF_DEPLOY", userJson["if_deploy"].(bool))
 	j.addParameter("CUSTOM_KUBERNETES_DEPLOY_TEMPLATE", userJson["if_use_auto_deploy_file"].(bool))
 	j.addParameter("CUSTOM_KUBERNETES_DEPLOY_TEMPLATE_CONTENT", userJson["auto_deploy_content"].(string))
 	j.addParameter("CUSTOM_DOCKERFILE", userJson["if_use_custom_dockerfile"].(bool))
