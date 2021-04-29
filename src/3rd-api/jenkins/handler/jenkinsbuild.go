@@ -98,7 +98,6 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.addParameter("IF_STORAGE_LOCALE", userJson["if_storage_locale"].(bool))
 	j.addParameter("STORAGE_PATH", userJson["storage_path"].(string))
 	j.addParameter("DEPLOY_MASTER_PASSWORD", "dmai2019999")
-	j.addParameter("BUILD_PLATFORM", "adp")
 	// all
 	j.addParameter("GLOABL_STRING", tools.BoolToString(userJson["if_use_grpc"].(bool))+":::"+
 		tools.BoolToString(userJson["if_use_sticky"].(bool))+":::"+
