@@ -168,10 +168,6 @@ type ReqJenkinsBuild struct {
 	DeployEnvType     string `json:"deploy_env_type"`
 	IfCompile         bool   `json:"if_compile"`
 	IfMakeImage               bool   `json:"if_make_image"`
-	IfUseDomainName           bool   `json:"if_use_domain_name"`
-	DomainName                string `json:"domain_name"`
-	IfUseHttps                bool   `json:"if_use_https"`
-	IfUseHttp                 bool   `json:"if_use_http"`
 	IfUseGrpc                 bool   `json:"if_use_grpc"`
 	IfUseGbs                  bool   `json:"if_use_gbs"`
 	IfUseSticky               bool   `json:"if_use_sticky"`
@@ -238,13 +234,9 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.DeployEnvType = project.DeployEnvType
 	r.IfCompile = *project.IfCompile
 	r.IfMakeImage = *project.IfMakeImage
-	r.IfUseDomainName = *project.IfUseDomainName
-	r.DomainName = project.DomainName
-	r.IfUseHttps = *project.IfUseHttps
 	r.IfUseGrpc = *project.IfUseGrpc
 	r.IfUseGbs = *project.IfUseGbs
 	r.IfUseSticky = *project.IfUseSticky
-	r.IfUseHttp = *project.IfUseHttp
 	r.IfDeploy = *project.IfDeploy
 	r.IfUseModel = *project.IfUseModel
 	r.IfUseGitManagerModel = *project.IfUseGitManagerModel

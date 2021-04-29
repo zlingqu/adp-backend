@@ -52,10 +52,6 @@ type Project struct {
 	DeployEnvType             string    `json:"deploy_env_type" gorm:"type:varchar(80)"`
 	ServeType                 string    `json:"serve_type" gorm:"type:varchar(80)"`
 	ReplicationControllerType string    `json:"replication_controller_type" gorm:"type:varchar(80)"`
-	IfUseDomainName           *bool     `json:"if_use_domain_name" gorm:"default:0"`
-	DomainName                string    `json:"domain_name" gorm:"type:varchar(80)"`
-	IfUseHttps                *bool     `json:"if_use_https" gorm:"default:0"`
-	IfUseHttp                 *bool     `json:"if_use_http" gorm:"default:0"`
 	IfUseGrpc                 *bool     `json:"if_use_grpc" gorm:"default:0"`
 	IfUseGbs                  *bool     `json:"if_use_gbs" gorm:"default:0"`
 	IfUseSticky               *bool     `json:"if_use_sticky" gorm:"default:0"`
