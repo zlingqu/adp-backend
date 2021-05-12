@@ -124,6 +124,7 @@ func NewJenkinsBuild(c *gin.Context) {
 		userJson["domain_middle"].(string)+":::"+
 		userJson["domain_after"].(string)+":::"+
 		userJson["domain_path"].(string)+":::"+
+		userJson["node_special_for"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_pod_anti_affinity"].(bool)))
 
 	//

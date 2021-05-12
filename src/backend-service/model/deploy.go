@@ -40,6 +40,7 @@ type UpdateDeploy struct {
 	ApolloClusterForDockerfile  	string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
 	ApolloNamespaceForDockerfile    string `json:"apollo_namespace_for_dockerfile" gorm:"default:'application';type:varchar(80);comment:关联的apollo空间名"`
 	K8sNamespace       				string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
+	NodeSpecialFor       			string `json:"node_special_for" gorm:"type:varchar(20);default:'None';comment:特殊node标识"`
 	YamlEnv            				string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
 	AndroidFlavor      				string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
 	DomainBefore					string `json:"domain_before" gorm:"type:varchar(20);default:None;comment:域名前缀值"`
@@ -212,6 +213,7 @@ type ReqJenkinsBuild struct {
 	IfUseIstio                bool   `json:"if_use_istio"`
 	JsVersion                 string `json:"js_version"`
 	YamlEnv                   string `json:"yaml_env"`
+	NodeSpecialFor            string `json:"node_special_for"`
 	AndroidFlavor             string `json:"android_flavor"`
 	IfUseApolloForDockerfile bool  `json:"if_use_apollo_for_dockerfile"`
 	ApolloEnvForDockerfile string `json:"apollo_env_for_dockerfile"`
@@ -263,6 +265,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ApolloNamespace = d.ApolloNamespace
 	r.JsVersion = d.JsVersion
 	r.YamlEnv = d.YamlEnv
+	r.NodeSpecialFor = d.NodeSpecialFor
 	r.DeployEnv = env.Name
 	r.DeployEnvStatus = env.Status
 	r.Replics = d.PodNums
