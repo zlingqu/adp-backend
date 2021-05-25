@@ -61,7 +61,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	j.parameter = make(map[string][]map[string]interface{}, 0)
 	// jenkins build param
 	//j.addParameter("NODE_ENV", strings.Replace(userJson["deploy_env"].(string), "prd", "prod", -1))
-	j.addParameter("NODE_ENV", "dev")
+	//j.addParameter("NODE_ENV", "dev")
 	j.addParameter("DEPLOY_ENV", "dev")
 	j.addParameter("APP_NAME", userJson["app_name"].(string))
 	j.addParameter("ENV_TYPE", userJson["deploy_env_type"].(string))
