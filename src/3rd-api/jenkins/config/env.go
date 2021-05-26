@@ -19,7 +19,7 @@ func GetEnv() *Env {
 	return &env
 }
 
-var jenkinsBaseURL = tools.GetEnvDefault("JENKINS_ADDRESS", "http://jenkins.ops.dm-ai.cn").(string)
+var jenkinsBaseURL = tools.GetEnvDefault("JENKINS_ADDRESS", "http://jenkins.dm-ai.com").(string)
 
 var env = Env{
 	Debug:                                   tools.GetEnvDefault("DEBUG_MODEL", true).(bool),
