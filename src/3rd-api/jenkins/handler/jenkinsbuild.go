@@ -58,7 +58,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	log.Info(userJson["branch_name"])
 
 	// init j.addParameter
-	j.parameter = make(map[string][]map[string]interface{}, 0)
+	j.parameter = make(map[string][]map[string]interface{})
 	// jenkins build param
 	//j.addParameter("NODE_ENV", strings.Replace(userJson["deploy_env"].(string), "prd", "prod", -1))
 	//j.addParameter("NODE_ENV", "dev")
@@ -136,10 +136,10 @@ func NewJenkinsBuild(c *gin.Context) {
 		return
 	}
 
-	log.Info(string(data))
+	// log.Info(string(data))
 	//request url
 	jenkinsBaseUrl := config.GetEnv().JenkinsAddress + "/job/" + userJson["app_name"].(string) + "/job/" + url.QueryEscape(userJson["branch_name"].(string))
-	log.Info(jenkinsBaseUrl)
+	// log.Info(jenkinsBaseUrl)
 
 	// request jenkins
 	req := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsBaseUrl+"/build").SetRequestProtocol("http").SetContentType("application/x-www-form-urlencoded").SetFormKeyValues("json", string(data))
@@ -209,8 +209,8 @@ func NewJenkinsBuild(c *gin.Context) {
 	// get lastBuild
 	log.Info("begin get last build")
 	jenkinsdLastBuildApiUrl := jenkinsBaseUrl + "/lastBuild/api/json"
-	log.Info(jenkinsdLastBuildApiUrl)
-	log.Info(config.GetEnv().JenkinsUser)
+	// log.Info(jenkinsdLastBuildApiUrl)
+	// log.Info(config.GetEnv().JenkinsUser)
 	reqLast := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsdLastBuildApiUrl).SetRequestProtocol("http").SetContentType("")
 	reqLast.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 	resultLast, errLast := reqLast.ExecRequest()
@@ -219,7 +219,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	}
 
 	// Unmarshal
-	log.Info(resultLast)
+	// log.Info(resultLast)
 	jsonLastErr := json.Unmarshal([]byte(resultLast), &j.JenkinsLastBuild)
 	if jsonLastErr != nil {
 		log.Error(jsonLastErr)
@@ -228,21 +228,22 @@ func NewJenkinsBuild(c *gin.Context) {
 		return
 	}
 
-	log.Info(j.JenkinsLastBuild)
+	// log.Info(j.JenkinsLastBuild)
 	buildIdInt, _ := strconv.Atoi(j.JenkinsLastBuild.Id)
 	buildId := fmt.Sprintf("%d", buildIdInt+1)
 	returnDate["status"] = "ok"
 	returnDate["info"] = "build success"
 	returnDate["url"] = config.GetEnv().JenkinsPipelineURL + userJson["app_name"].(string) + "/detail/" + url.QueryEscape(userJson["branch_name"].(string)) + "/" + buildId + "/pipeline"
 
-	log.Info(returnDate)
+	// log.Info(returnDate)
 	c.JSON(http.StatusOK, returnDate)
 	return
 }
 
 func (j *JenkinsBuild) addParameter(name string, value interface{}) {
 	j.parameter["parameter"] = append(j.parameter["parameter"], map[string]interface{}{"name": name, "value": value})
-	log.Info(j.parameter)
+	// log.Info(j.parameter)
+	fmt.Printf("jenkins build 添加参数%v=%v\n", name, value)
 	return
 }
 
