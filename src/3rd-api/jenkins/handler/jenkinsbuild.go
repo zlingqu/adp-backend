@@ -37,7 +37,7 @@ func NewJenkinsBuild(c *gin.Context) {
 	}
 
 	j := JenkinsBuild{
-		parameter:          make(map[string][]map[string]interface{}, 0),
+		parameter:          make(map[string][]map[string]interface{}),
 		DmaiBaseDevopsHttp: DmaiBaseDevopsHttp{},
 		JenkinsJobBuild:    JenkinsJobBuild{},
 		JenkinsLastBuild:   JenkinsLastBuild{},
@@ -116,7 +116,7 @@ func NewJenkinsBuild(c *gin.Context) {
 		userJson["yaml_env"].(string)+":::"+
 		tools.BoolToString(userJson["if_use_apollo"].(bool))+":::"+
 		userJson["android_flavor"].(string)+":::"+
-	    tools.BoolToString(userJson["if_use_apollo_for_dockerfile"].(bool))+":::"+
+		tools.BoolToString(userJson["if_use_apollo_for_dockerfile"].(bool))+":::"+
 		userJson["apollo_env_for_dockerfile"].(string)+":::"+
 		userJson["apollo_cluster_for_dockerfile"].(string)+":::"+
 		userJson["apollo_namespace_for_dockerfile"].(string)+":::"+
@@ -143,6 +143,8 @@ func NewJenkinsBuild(c *gin.Context) {
 
 	// request jenkins
 	req := glibs.NewHttpRequestCustom([]byte(""), "POST", jenkinsBaseUrl+"/build").SetRequestProtocol("http").SetContentType("application/x-www-form-urlencoded").SetFormKeyValues("json", string(data))
+	fmt.Println("请求报文是" + string(data))
+	// fmt.Println("请求报文是" + *req.body)
 	req.SetBasicAuth(config.GetEnv().JenkinsUser, config.GetEnv().JenkinsPasswd)
 	result, err := req.ExecRequest()
 	if err != nil {
