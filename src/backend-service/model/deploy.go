@@ -9,54 +9,54 @@ import (
 )
 
 type UpdateDeploy struct {
-	AppId              				uint   `json:"app_id" gorm:"comment:应用的ID"`
-	Branch             				string `json:"branch" gorm:"type:varchar(80);comment:git仓库的分支名"`
-	EnvId              				uint   `json:"env_id" gorm:"comment:环境ID"`
-	GitCommitId        				string `json:"git_commit_id" gorm:"type:varchar(150);comment:git仓库的commitID"`
-	GitTag             				string `json:"git_tag" gorm:"type:varchar(150);comment:git仓库的tag"`
-	ID                 				uint   `json:"id" gorm:"primary_key;comment:工单ID"`
-	Name               				string `json:"name" gorm:"type:varchar(80);comment:工单名字"`
-	OwnerEnglishName   				string `json:"owner_english_name" gorm:"type:varchar(80);comment:工单所属英文名"`
-	OwnerChinaName     				string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
-	Status             				string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
-	VersionControlMode 				string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
-	PodNums            				int    `json:"pod_nums" gorm:"type:bigint(20);default:1;comment:POD数量"`
-	IfStorageLocale    				*bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
-	StoragePath        				string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire      				*int   `json:"cpu_min_require" gorm:"type:bigint(20);default:100;comment:CPU需求最小值"`
-	CpuMaxRequire      				*int   `json:"cpu_max_require" gorm:"type:bigint(20);default:200;comment:CPU最大限制"`
-	MemoryMinRequire   				*int   `json:"memory_min_require" gorm:"type:bigint(20);default:200;comment:内存需求最小值"`
-	MemoryMaxRequire   				*int   `json:"memory_max_require" gorm:"type:bigint(20);default:400;comment:内存最大限制"`
-	GpuControlMode     				string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
-	GpuCardCount       				int    `json:"gpu_card_count" gorm:"type:bigint(20);default:1;comment:gpu卡数量"`
-	GpuMemCount        				int    `json:"gpu_mem_count" gorm:"type:bigint(20);default:2;comment:gpu显存大小"`
-	GpuType            				string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
-	IfUsePodAntiAffinity        	*bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
-	IfUseApollo        				*bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
-	ApolloClusterName  				string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
-	ApolloNamespace    				string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
-	IfUseApolloForDockerfile        *bool  `json:"if_use_apollo_for_dockerfile" gorm:"default:0;comment:是否将apollo配置注入环境变量到Dockerfile"`
-	ApolloEnvForDockerfile  		string `json:"apollo_env_for_dockerfile" gorm:"default:'prd';type:varchar(80);comment:关联的apollo环境名字"`
-	ApolloClusterForDockerfile  	string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
-	ApolloNamespaceForDockerfile    string `json:"apollo_namespace_for_dockerfile" gorm:"default:'application';type:varchar(80);comment:关联的apollo空间名"`
-	K8sNamespace       				string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
-	NodeSpecialFor       			string `json:"node_special_for" gorm:"type:varchar(20);default:'None';comment:特殊node标识"`
-	YamlEnv            				string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
-	AndroidFlavor      				string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
-	DomainBefore					string `json:"domain_before" gorm:"type:varchar(20);default:None;comment:域名前缀值"`
-	DomainMiddle					string `json:"domain_middle" gorm:"type:varchar(80);default:None;comment:域名中间值"`
-	DomainAfter					    string `json:"domain_after" gorm:"type:varchar(80);default:None;comment:域名后缀值"`
-	DomainPath						string `json:"domain_path" gorm:"type:varchar(256);default:None;comment:域名path路径"`
-	JsVersion          				string `json:"js_version" gorm:"type:varchar(80)"`
+	AppId                        uint   `json:"app_id" gorm:"comment:应用的ID"`
+	Branch                       string `json:"branch" gorm:"type:varchar(80);comment:git仓库的分支名"`
+	EnvId                        uint   `json:"env_id" gorm:"comment:环境ID"`
+	GitCommitId                  string `json:"git_commit_id" gorm:"type:varchar(150);default:last;comment:git仓库的commitID"`
+	GitTag                       string `json:"git_tag" gorm:"type:varchar(150);comment:git仓库的tag"`
+	ID                           uint   `json:"id" gorm:"primary_key;comment:工单ID"`
+	Name                         string `json:"name" gorm:"type:varchar(80);comment:工单名字"`
+	OwnerEnglishName             string `json:"owner_english_name" gorm:"type:varchar(80);comment:工单所属英文名"`
+	OwnerChinaName               string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
+	Status                       string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
+	VersionControlMode           string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
+	PodNums                      int    `json:"pod_nums" gorm:"type:int(11);default:1;comment:POD数量"`
+	IfStorageLocale              *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
+	StoragePath                  string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
+	CpuMinRequire                *int   `json:"cpu_min_require" gorm:"type:int(11);default:'100';comment:CPU需求最小值"`
+	CpuMaxRequire                *int   `json:"cpu_max_require" gorm:"type:int(11);default:200;comment:CPU最大限制"`
+	MemoryMinRequire             *int   `json:"memory_min_require" gorm:"type:int(11);default:200;comment:内存需求最小值"`
+	MemoryMaxRequire             *int   `json:"memory_max_require" gorm:"type:int(11);default:400;comment:内存最大限制"`
+	GpuControlMode               string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
+	GpuCardCount                 int    `json:"gpu_card_count" gorm:"type:int(11);default:1;comment:gpu卡数量"`
+	GpuMemCount                  int    `json:"gpu_mem_count" gorm:"type:int(11);default:2;comment:gpu显存大小"`
+	GpuType                      string `json:"gpu_type" gorm:"type:varchar(512);default:'all';comment:gpu型号"`
+	IfUsePodAntiAffinity         *bool  `json:"if_use_pod_anti_affinity" gorm:"default:0;comment:是否开启pod反亲和"`
+	IfUseApollo                  *bool  `json:"if_use_apollo" gorm:"default:1;comment:是否需要使用apollo配置中心"`
+	ApolloClusterName            string `json:"apollo_cluster_name" gorm:"type:varchar(80);comment:apollo集群名字"`
+	ApolloNamespace              string `json:"apollo_namespace" gorm:"type:varchar(80);comment:apollo的namespace"`
+	IfUseApolloForDockerfile     *bool  `json:"if_use_apollo_for_dockerfile" gorm:"default:0;comment:是否将apollo配置注入环境变量到Dockerfile"`
+	ApolloEnvForDockerfile       string `json:"apollo_env_for_dockerfile" gorm:"default:'prd';type:varchar(80);comment:关联的apollo环境名字"`
+	ApolloClusterForDockerfile   string `json:"apollo_cluster_for_dockerfile" gorm:"default:'default';type:varchar(80);comment:关联的apollo集群名字"`
+	ApolloNamespaceForDockerfile string `json:"apollo_namespace_for_dockerfile" gorm:"default:'application';type:varchar(80);comment:关联的apollo空间名"`
+	K8sNamespace                 string `json:"k8s_namespace" gorm:"type:varchar(80);comment:k8s的namespace"`
+	NodeSpecialFor               string `json:"node_special_for" gorm:"type:varchar(20);default:'None';comment:特殊node标识"`
+	YamlEnv                      string `json:"yaml_env" gorm:"type:varchar(1024);default:None;comment:yaml文件需要注入的环境变量"`
+	AndroidFlavor                string `json:"android_flavor" gorm:"type:varchar(80);default:default;comment:安卓编译渠道号"`
+	DomainBefore                 string `json:"domain_before" gorm:"type:varchar(20);default:None;comment:域名前缀值"`
+	DomainMiddle                 string `json:"domain_middle" gorm:"type:varchar(80);default:None;comment:域名中间值"`
+	DomainAfter                  string `json:"domain_after" gorm:"type:varchar(80);default:None;comment:域名后缀值"`
+	DomainPath                   string `json:"domain_path" gorm:"type:varchar(256);default:None;comment:域名path路径"`
+	JsVersion                    string `json:"js_version" gorm:"type:varchar(80)"`
 }
 
 type Deploy struct {
 	UpdateDeploy
-	CreatedAt  time.Time `json:"created_at" time_format:"2006-01-02 15:04:05" time_local:"1"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	LastDeploy time.Time `json:"last_deploy"`
-	LastBuildInfo     string `json:"last_build_info" gorm:"type:text"`
-	JenkinsBuildToken string `json:"jenkins_build_token" gorm:"type:text"`
+	CreatedAt         time.Time `json:"created_at" time_format:"2006-01-02 15:04:05" time_local:"1"`
+	UpdatedAt         time.Time `json:"updated_at"`
+	LastDeploy        time.Time `json:"last_deploy"`
+	LastBuildInfo     string    `json:"last_build_info" gorm:"type:text"`
+	JenkinsBuildToken string    `json:"jenkins_build_token" gorm:"type:text"`
 }
 
 type ReqDeploy struct {
@@ -160,71 +160,69 @@ type ID struct {
 }
 
 type ReqJenkinsBuild struct {
-	GitAddress        string `json:"git_address"`
-	AppName           string `json:"app_name"`
-	ProductName       string `json:"product_name"`
-	CodeLanguage      string `json:"code_language"`
-	IfAddUnityProject bool   `json:"if_add_unity_project"`
-	UnityAppName      string `json:"unity_app_name"`
-	DeployEnvType     string `json:"deploy_env_type"`
-	IfCompile         bool   `json:"if_compile"`
-	IfMakeImage               bool   `json:"if_make_image"`
-	IfUseGrpc                 bool   `json:"if_use_grpc"`
-	IfUseGbs                  bool   `json:"if_use_gbs"`
-	IfUseSticky               bool   `json:"if_use_sticky"`
-	IfDeploy                  bool   `json:"if_deploy"`
-	IfUseModel                bool   `json:"if_use_model"`
-	IfUseGitManagerModel      bool   `json:"if_use_git_manager_model"`
-	ModelGitRepository        string `json:"model_git_repository"`
-	IfSaveModelBuildComputer  bool   `json:"if_save_model_build_computer"`
-	IfUseAutoDeployFile       bool   `json:"if_use_auto_deploy_file"`
-	AutoDeployContent         string `json:"auto_deploy_content"`
-	IfUseCustomDockerfile     bool   `json:"if_use_custom_dockerfile"`
-	IfUseRootDockerfile       bool   `json:"if_use_root_dockerfile"`
-	DockerfileContent         string `json:"dockerfile_content"`
-	ServeType                 string `json:"serve_type"`
-	ReplicationControllerType string `json:"replication_controller_type"`
-	IfUseGpuCard              bool   `json:"if_use_gpu_card"`
-	GpuControlMode            string `json:"gpu_control_mode"`
-	GpuCardCount              int    `json:"gpu_card_count"`
-	GpuMemCount               int    `json:"gpu_mem_count"`
-	GpuType                   string `json:"gpu_type"`
-	BranchName                string `json:"branch_name"`
-	Version                   string `json:"version"`
-	VersionControlMode        string `json:"version_control_mode"`
-	GitCommitId               string `json:"git_commit_id"`
-	GitTag                    string `json:"git_tag"`
-	IfUsePodAntiAffinity      bool   `json:"if_use_pod_anti_affinity"`
-	IfUseApollo               bool   `json:"if_use_apollo"`
-	ApolloClusterName         string `json:"apollo_cluster_name"`
-	ApolloNamespace           string `json:"apollo_namespace"`
-	DeployEnv                 string `json:"deploy_env"`
-	DeployEnvStatus           string `json:"deploy_env_status"`
-	Replics                   int    `json:"replics"`
-	ContainerPort             int    `json:"container_port"`
-	ServiceListenPort         string `json:"service_listen_port"`
-	CpuRequest                string `json:"cpu_request"`
-	CpuLimit                  string `json:"cpu_limit"`
-	MemoryRequest             string `json:"memory_request"`
-	MemoryLimit               string `json:"memory_limit"`
-	IfStorageLocale           bool   `json:"if_storage_locale"`
-	StoragePath               string `json:"storage_path"`
-	IfCheckPodsStatus         bool   `json:"if_check_pods_status"`
-	IfUseIstio                bool   `json:"if_use_istio"`
-	JsVersion                 string `json:"js_version"`
-	YamlEnv                   string `json:"yaml_env"`
-	NodeSpecialFor            string `json:"node_special_for"`
-	AndroidFlavor             string `json:"android_flavor"`
-	IfUseApolloForDockerfile bool  `json:"if_use_apollo_for_dockerfile"`
-	ApolloEnvForDockerfile string `json:"apollo_env_for_dockerfile"`
-	ApolloClusterForDockerfile string `json:"apollo_cluster_for_dockerfile"`
+	GitAddress                   string `json:"git_address"`
+	AppName                      string `json:"app_name"`
+	ProductName                  string `json:"product_name"`
+	CodeLanguage                 string `json:"code_language"`
+	IfAddUnityProject            bool   `json:"if_add_unity_project"`
+	UnityAppName                 string `json:"unity_app_name"`
+	DeployEnvType                string `json:"deploy_env_type"`
+	IfCompile                    bool   `json:"if_compile"`
+	IfMakeImage                  bool   `json:"if_make_image"`
+	IfUseGrpc                    bool   `json:"if_use_grpc"`
+	IfUseGbs                     bool   `json:"if_use_gbs"`
+	IfUseSticky                  bool   `json:"if_use_sticky"`
+	IfDeploy                     bool   `json:"if_deploy"`
+	IfUseModel                   bool   `json:"if_use_model"`
+	IfUseGitManagerModel         bool   `json:"if_use_git_manager_model"`
+	ModelGitRepository           string `json:"model_git_repository"`
+	IfSaveModelBuildComputer     bool   `json:"if_save_model_build_computer"`
+	IfUseAutoDeployFile          bool   `json:"if_use_auto_deploy_file"`
+	AutoDeployContent            string `json:"auto_deploy_content"`
+	IfUseCustomDockerfile        bool   `json:"if_use_custom_dockerfile"`
+	IfUseRootDockerfile          bool   `json:"if_use_root_dockerfile"`
+	DockerfileContent            string `json:"dockerfile_content"`
+	ServeType                    string `json:"serve_type"`
+	ReplicationControllerType    string `json:"replication_controller_type"`
+	IfUseGpuCard                 bool   `json:"if_use_gpu_card"`
+	GpuControlMode               string `json:"gpu_control_mode"`
+	GpuCardCount                 int    `json:"gpu_card_count"`
+	GpuMemCount                  int    `json:"gpu_mem_count"`
+	GpuType                      string `json:"gpu_type"`
+	BranchName                   string `json:"branch_name"`
+	Version                      string `json:"version"`
+	VersionControlMode           string `json:"version_control_mode"`
+	GitCommitId                  string `json:"git_commit_id"`
+	GitTag                       string `json:"git_tag"`
+	IfUsePodAntiAffinity         bool   `json:"if_use_pod_anti_affinity"`
+	IfUseApollo                  bool   `json:"if_use_apollo"`
+	ApolloClusterName            string `json:"apollo_cluster_name"`
+	ApolloNamespace              string `json:"apollo_namespace"`
+	DeployEnv                    string `json:"deploy_env"`
+	DeployEnvStatus              string `json:"deploy_env_status"`
+	Replics                      int    `json:"replics"`
+	ContainerPort                int    `json:"container_port"`
+	ServiceListenPort            string `json:"service_listen_port"`
+	CpuRequest                   string `json:"cpu_request"`
+	CpuLimit                     string `json:"cpu_limit"`
+	MemoryRequest                string `json:"memory_request"`
+	MemoryLimit                  string `json:"memory_limit"`
+	IfStorageLocale              bool   `json:"if_storage_locale"`
+	StoragePath                  string `json:"storage_path"`
+	IfCheckPodsStatus            bool   `json:"if_check_pods_status"`
+	IfUseIstio                   bool   `json:"if_use_istio"`
+	JsVersion                    string `json:"js_version"`
+	YamlEnv                      string `json:"yaml_env"`
+	NodeSpecialFor               string `json:"node_special_for"`
+	AndroidFlavor                string `json:"android_flavor"`
+	IfUseApolloForDockerfile     bool   `json:"if_use_apollo_for_dockerfile"`
+	ApolloEnvForDockerfile       string `json:"apollo_env_for_dockerfile"`
+	ApolloClusterForDockerfile   string `json:"apollo_cluster_for_dockerfile"`
 	ApolloNamespaceForDockerfile string `json:"apollo_namespace_for_dockerfile"`
-	DomainBefore 			string `json:"domain_before"`
-	DomainMiddle 			string `json:"domain_middle"`
-	DomainAfter 			string `json:"domain_after"`
-	DomainPath 				string `json:"domain_path"`
-
-
+	DomainBefore                 string `json:"domain_before"`
+	DomainMiddle                 string `json:"domain_middle"`
+	DomainAfter                  string `json:"domain_after"`
+	DomainPath                   string `json:"domain_path"`
 }
 
 func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Deploy) *ReqJenkinsBuild {
