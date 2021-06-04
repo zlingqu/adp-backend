@@ -23,10 +23,10 @@ type UpdateDeploy struct {
 	PodNums                      int    `json:"pod_nums" gorm:"type:int(11);default:1;comment:POD数量"`
 	IfStorageLocale              *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
 	StoragePath                  string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
-	CpuMinRequire                *int   `json:"cpu_min_require" gorm:"type:int(11);default:100;comment:CPU需求最小值"`
-	CpuMaxRequire                *int   `json:"cpu_max_require" gorm:"type:int(11);default:200;comment:CPU最大限制"`
-	MemoryMinRequire             *int   `json:"memory_min_require" gorm:"type:int(11);default:200;comment:内存需求最小值"`
-	MemoryMaxRequire             *int   `json:"memory_max_require" gorm:"type:int(11);default:400;comment:内存最大限制"`
+	CpuMinRequire                *int   `json:"cpu_min_require" gorm:"comment:CPU需求最小值"`
+	CpuMaxRequire                *int   `json:"cpu_max_require" gorm:"comment:CPU最大限制"`
+	MemoryMinRequire             *int   `json:"memory_min_require" gorm:"comment:内存需求最小值"`
+	MemoryMaxRequire             *int   `json:"memory_max_require" gorm:"comment:内存最大限制"`
 	GpuControlMode               string `json:"gpu_control_mode" gorm:"type:varchar(80);default:'mem';comment:gpu使用方式"`
 	GpuCardCount                 int    `json:"gpu_card_count" gorm:"type:int(11);default:1;comment:gpu卡数量"`
 	GpuMemCount                  int    `json:"gpu_mem_count" gorm:"type:int(11);default:2;comment:gpu显存大小"`
