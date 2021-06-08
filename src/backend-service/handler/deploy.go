@@ -315,9 +315,12 @@ func PostDeploy(c *gin.Context) {
 	t2, _ := time.ParseInLocation("2006-01-02T15:04:05Z", time.Now().Format("2006-01-02T15:04:05Z"), time.Local)
 	deploy.LastDeploy = t2
 
-    var count int64
-	m.DB.Debug().Where("env_id = ? and domain_middle = ? and domain_after = ? and domain_path = ?",deploy.EnvId,deploy.DomainMiddle,deploy.DomainAfter,deploy.DomainPath).Find(&deploy).Count(&count)
-
+	var count int64
+	if (deploy.DomainAfter == ".dm-ai.cn" || deploy.DomainAfter == ".dm-ai.com") && deploy.DomainMiddle == "None" { //prd环境允许不暴露域名
+		count = 0
+	} else {
+		m.DB.Debug().Where("env_id = ? and domain_middle = ? and domain_after = ? and domain_path = ?", deploy.EnvId, deploy.DomainMiddle, deploy.DomainAfter, deploy.DomainPath).Find(&deploy).Count(&count)
+	}
 
 	if count >= 1 {
 		c.JSON(http.StatusOK, gin.H{
@@ -326,14 +329,14 @@ func PostDeploy(c *gin.Context) {
 		})
 		return
 	}
-		err:=m.DB.Create(deploy).Error
-		if err != nil{
-			c.JSON(http.StatusOK, gin.H{
-				"code": 500,
-				"res":  err.Error(),
-			})
-			return
-		}
+	err := m.DB.Create(deploy).Error
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 500,
+			"res":  err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
