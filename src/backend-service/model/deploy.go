@@ -20,6 +20,7 @@ type UpdateDeploy struct {
 	OwnerChinaName               string `json:"owner_china_name" gorm:"type:varchar(80);comment:工单所属中文名"`
 	Status                       string `json:"status" gorm:"type:varchar(20);comment:工单状态"`
 	VersionControlMode           string `json:"version_control_mode" gorm:"type:varchar(80);comment:代码版本控制方式"`
+	AutoDeployContent            string `json:"auto_deploy_content" gorm:"type:text;comment:自定义的yaml内容"`
 	PodNums                      int    `json:"pod_nums" gorm:"type:int(11);default:1;comment:POD数量"`
 	IfStorageLocale              *bool  `json:"if_storage_locale" gorm:"default:0;comment:是否需要存储"`
 	StoragePath                  string `json:"storage_path" gorm:"type:varchar(512);comment:存储路径"`
@@ -243,7 +244,7 @@ func (r *ReqJenkinsBuild) SetReqJenkinsBuildData(env Env, project Project, d Dep
 	r.ModelGitRepository = project.ModelGitRepository
 	r.IfSaveModelBuildComputer = *project.IfSaveModelBuildComputer
 	r.IfUseAutoDeployFile = *project.IfUseAutoDeployFile
-	r.AutoDeployContent = project.AutoDeployContent
+	r.AutoDeployContent = d.AutoDeployContent
 	r.IfUseCustomDockerfile = *project.IfUseCustomDockerfile
 	r.IfUseRootDockerfile = *project.IfUseRootDockerfile
 	r.DockerfileContent = project.DockerfileContent
