@@ -2,7 +2,6 @@ package handler
 
 import (
 	"app-deploy-platform/3rd-api/kubernetes/config"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,7 +28,7 @@ func GetK8sKeyFile(c *gin.Context) {
 		})
 		return
 	}
-	c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "config"))
-	c.Writer.Header().Add("Content-Type", "application/octet-stream")
+	// c.Writer.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=%s", "config"))
+	// c.Writer.Header().Add("Content-Type", "application/octet-stream")
 	c.File(downFile)
 }
